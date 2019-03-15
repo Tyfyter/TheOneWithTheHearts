@@ -1,0 +1,3 @@
+author = Tyfyter (Tyfyter2002 on steam)
+version = 0.1
+displayName = Heart of Magic
