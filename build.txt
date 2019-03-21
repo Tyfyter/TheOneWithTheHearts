@@ -1,3 +1,8 @@
 author = Tyfyter (Tyfyter2002 on steam)
+
 version = 0.1
+
 displayName = Heart of Magic
+homepage = https://sites.google.com/view/tyfyterpoorlymoddingterraria/home
+includeSource = true
+languageVersion = 6

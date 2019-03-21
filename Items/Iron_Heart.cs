@@ -1,38 +1,45 @@
+using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TheOneWithTheHearts.Items
 {
-	public class Iron_Heart : ModItem
+	public class Iron_Heart : HeartItemBase
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Iron_Heart");
-			Tooltip.SetDefault("This is a modded sword.");
+			DisplayName.SetDefault("Iron Heart");
+			Tooltip.SetDefault("This is not a modded sword.");
 		}
 		public override void SetDefaults()
 		{
-			item.damage = 50;
-			item.melee = true;
-			item.width = 40;
-			item.height = 40;
-			item.useTime = 20;
-			item.useAnimation = 20;
-			item.useStyle = 1;
-			item.knockBack = 6;
-			item.value = 10000;
-			item.rare = 2;
-			item.UseSound = SoundID.Item1;
-			item.autoReuse = true;
+			item.CloneDefaults(ItemID.LifeCrystal);
+			item.consumable = false;
+			item.useStyle = 0;
+			item.maxStack = 1;
+			item.scale = 1/1.5f;
+			item.height = (int)(44*item.scale);
+			item.width = (int)(44*item.scale);
+			life = max = 15;
 		}
-
+		/*
+		public override void ModifyTooltips(List<TooltipLine> tooltips){
+			for (int i = 0; i < tooltips.Count; i++)if(tooltips[i].Name.ToLower().Contains("tooltip"))tooltips[i].text = life+"/"+max;
+		}//*/
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.DirtBlock, 10);
+			recipe.AddIngredient(ItemID.IronBar, 6);
+			recipe.AddIngredient(ItemID.LifeCrystal, 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
+			recipe.anyIronBar = true;
 			recipe.AddRecipe();
+		}
+		public override void WhileActive(Player player){
+			base.WhileActive(player);
+			player.statDefense+=10;
 		}
 	}
 }
