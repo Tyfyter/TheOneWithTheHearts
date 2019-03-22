@@ -7,7 +7,7 @@ namespace TheOneWithTheHearts.Items {
     public class HeartGlobalItem : GlobalItem {
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
-        bool a = false;
+        int b = 0;
         public override bool OnPickup(Item item, Player player){
             if(item.type == ItemID.Heart){
                 HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
@@ -35,19 +35,14 @@ namespace TheOneWithTheHearts.Items {
             }
             return base.UseItem(item, player);
         }
+        public override bool CanUseItem(Item item, Player player){
+            b = 0;
+            return true;
+        }
         public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack){
-            if(!a){
-                Main.NewText("!");
-                a=true;
-                speedY+=4;
-                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
-                speedY+=4;
-                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
-                speedY+=4;
-                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
-                speedY-=12;
-                a=false;
-            }
+            if(++b>=player.GetModPlayer<HeartPlayer>().multishot||item.modItem==null||!item.ranged)return true;
+            if(item.modItem.mod.Name.ToLower().Contains("refthegun"))return true;
+            ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
             return true;
         }
     }

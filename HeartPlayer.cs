@@ -12,6 +12,8 @@ namespace TheOneWithTheHearts {
     public class HeartPlayer : ModPlayer {
         public List<Item> hearts = new List<Item>(20){null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null};
         public int oldStatLife = 0;
+        public int multishot = 1;
+
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
             PlayerDeathReason ignore = new PlayerDeathReason();
             ignore.SourceCustomReason = "this_shouldn't_be_able_to_kill";
@@ -47,6 +49,7 @@ namespace TheOneWithTheHearts {
         public override void PostUpdate(){
             string a = "!";
             if(!Main.gameInactive){
+                multishot = 1;
                 if(getCurrentHeart()>=0)if(TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem!=null)if(TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem.mod.Name==mod.Name)if(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).GetType().IsSubclassOf(typeof(HeartItemBase))){
                     ((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).WhileActive(player);
                 }
