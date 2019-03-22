@@ -35,7 +35,7 @@ namespace TheOneWithTheHearts.UI
 			UpdatePlayer();
 		}
 		public void UpdatePlayer(){
-			for(int i = 0; i < 15; i++)Main.LocalPlayer.GetModPlayer<HeartPlayer>().hearts[i]=heartSlots[i].Item;
+			for(int i = 0; i < 20; i++)Main.LocalPlayer.GetModPlayer<HeartPlayer>().hearts[i]=heartSlots[i].Item;
 		}
     }
 }

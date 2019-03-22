@@ -1,9 +1,13 @@
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TheOneWithTheHearts.Items {
     public class HeartGlobalItem : GlobalItem {
+        public override bool InstancePerEntity => true;
+        public override bool CloneNewInstances => true;
+        bool a = false;
         public override bool OnPickup(Item item, Player player){
             if(item.type == ItemID.Heart){
                 HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
@@ -30,6 +34,21 @@ namespace TheOneWithTheHearts.Items {
                 }
             }
             return base.UseItem(item, player);
+        }
+        public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack){
+            if(!a){
+                Main.NewText("!");
+                a=true;
+                speedY+=4;
+                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+                speedY+=4;
+                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+                speedY+=4;
+                ItemLoader.Shoot(item, player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+                speedY-=12;
+                a=false;
+            }
+            return true;
         }
     }
 }

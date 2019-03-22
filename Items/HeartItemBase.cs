@@ -15,6 +15,9 @@ namespace TheOneWithTheHearts.Items {
         public int regencdtime = 0;
         public int regentime = 0;
         public int regentimemax = 1;
+        public virtual string ExtraTexture {
+            get {return "";}
+        }
         public virtual int Regen {
             get {return regen;}
         }
@@ -42,12 +45,13 @@ namespace TheOneWithTheHearts.Items {
             //Main.NewText(item.Name+".Heal("+health+"-Math.Max("+Main.player[item.owner].statLife+"-"+Main.player[item.owner].GetModPlayer<HeartPlayer>().oldStatLife+",0))");
             Heal(health-Math.Max(Main.player[item.owner].statLife-Main.player[item.owner].GetModPlayer<HeartPlayer>().oldStatLife,0));
         }
-        public virtual void Heal(int health, int overflow = 2){
+        public virtual void Heal(int health, int overflow = 2, bool display = true){
             int plife = life;
             life = overflow == 1?life+health:Math.Min(life+health,max);
             if(overflow >= 2&&life-plife<health&&life-plife>0){
                 if(!TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.IsAir)((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.modItem).Heal(health-(life-plife),3);
             }
+            if(!display)return;
             if(overflow == 2){
                 CombatText.NewText(Main.player[item.owner].Hitbox, CombatText.HealLife, health);
             }else if (overflow<2){
@@ -83,11 +87,11 @@ namespace TheOneWithTheHearts.Items {
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale){
             if(index == -2)return true;
             item.alpha = 0;
-            if(mod.TextureExists("Items/"+this.GetType().Name+"_Pre"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Pre"), position-new Vector2(3,3), null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Pre"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Pre"), position-new Vector2(3,3), null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
             GetAlpha(drawColor);
-            if(mod.TextureExists("Items/"+this.GetType().Name))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), position-new Vector2(3,3), null, drawColor, 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture), position-new Vector2(3,3), null, drawColor, 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
             item.alpha = 0;
-            if(mod.TextureExists("Items/"+this.GetType().Name+"_Extra"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Extra"), position-new Vector2(3,3), null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Extra"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Extra"), position-new Vector2(3,3), null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale*1.5f, SpriteEffects.None, 0);
             index = -2;
             return false;
         }//*/

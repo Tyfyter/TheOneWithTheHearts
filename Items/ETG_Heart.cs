@@ -11,6 +11,7 @@ namespace TheOneWithTheHearts.Items
 {
 	public class ETG_Heart : HeartItemBase
 	{
+		public int heal = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Familliar Heart");
@@ -80,12 +81,17 @@ namespace TheOneWithTheHearts.Items
             index = -2;
             return false;
         }
-        public override void Heal(int health, int overflow = 2){
+        public override void Heal(int health, int overflow = 2, bool display = false){
             int plife = life;
+			if(health%10!=0){
+				heal+=health%10;
+				if(heal>30)Heal(10);
+			}
             life = (int)(overflow == 1?life+(health/10f):Math.Min(life+(health/10f),max));
             if(overflow >= 2&&(life-plife)*10<health&&life-plife>0){
                 if(!TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.IsAir)((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.modItem).Heal(health-(life-plife),3);
             }
+			if(!display)return;
             if(overflow == 2){
                 CombatText.NewText(Main.player[item.owner].Hitbox, CombatText.HealLife, health);
             }else if (overflow<2){
@@ -94,6 +100,6 @@ namespace TheOneWithTheHearts.Items
         }
 		public override Color? GetAlpha(Color lightColor){item.alpha = 0;return null;}
 		public override void WhileActive(Player player){player.endurance+=10;}
-		public override void WhileInactive(Player player){}
+		public override void WhileInactive(Player player){heal=0;}
 	}
 }

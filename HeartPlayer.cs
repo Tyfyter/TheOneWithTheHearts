@@ -74,11 +74,11 @@ namespace TheOneWithTheHearts {
             for (int i = 0; i < 5; i++){
                 ((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem).life=((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem).max;
             }//*/
-            if(!TheOneWithTheHearts.mod.ui.heartSlots[0].Item.IsAir)((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[0].Item.modItem).AutoHeal(100);
+            if(!TheOneWithTheHearts.mod.ui.heartSlots[0].Item.IsAir)((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[0].Item.modItem).Heal(100);
         }
         public int getCurrentHeart(){
             //int a = 0;
-            for (int i = 14; i >= 0; i--){
+            for (int i = 19; i >= 0; i--){
                 if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.IsAir)continue;
                 //a++;
                 if(!(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem.GetType().IsSubclassOf(typeof(HeartItemBase))))continue;

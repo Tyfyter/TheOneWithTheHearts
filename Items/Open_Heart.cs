@@ -43,12 +43,13 @@ namespace TheOneWithTheHearts.Items
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
-        public override void Heal(int health, int overflow = 2){
+        public override void Heal(int health, int overflow = 2, bool display = false){
             int plife = life;
             life = (int)(overflow == 1?life+(health*1.25f):Math.Min(life+(health*1.25f),max));
             if(overflow >= 2&&(life-plife)/1.25f<health&&life-plife>0){
                 if(!TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.IsAir)((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[index+1].Item.modItem).Heal(health-(life-plife),3);
             }
+			if(!display)return;
             if(overflow == 2){
                 CombatText.NewText(Main.player[item.owner].Hitbox, CombatText.HealLife, health);
             }else if (overflow<2){
