@@ -27,10 +27,16 @@ namespace TheOneWithTheHearts.Items {
             //run BEFORE healing
             if(item.healLife>0){
                 HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
-                if(heartPlayer.getCurrentHeart()>=0)if(!TheOneWithTheHearts.mod.ui.heartSlots[heartPlayer.getCurrentHeart()].Item.IsAir){
+                if(heartPlayer.getCurrentHeart()>=0){
+                    if(!TheOneWithTheHearts.mod.ui.heartSlots[heartPlayer.getCurrentHeart()].Item.IsAir){
+                        int h = item.healLife;
+                        h = h-(player.statLifeMax2-player.statLife);
+                        if(h>0)((HeartItemBase)heartPlayer.hearts[heartPlayer.getCurrentHeart()].modItem).Heal(h, display:true);
+                    }
+                }else if(item.healLife>(player.statLifeMax2-player.statLife))if(!TheOneWithTheHearts.mod.ui.heartSlots[0].Item.IsAir){
                     int h = item.healLife;
                     h = h-(player.statLifeMax2-player.statLife);
-                    ((HeartItemBase)heartPlayer.hearts[heartPlayer.getCurrentHeart()].modItem).AutoHeal(item.healLife);
+                    if(h>0)((HeartItemBase)heartPlayer.hearts[0].modItem).Heal(h, display:true);
                 }
             }
             return base.UseItem(item, player);

@@ -28,6 +28,17 @@ namespace TheOneWithTheHearts.Items
 			item.width = (int)(44*item.scale);
 			life = max = 4;
 		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType<ETG_Heart>(), 1);
+			recipe.AddIngredient(mod.ItemType<Mech_Heart>(), 1);
+			recipe.AddIngredient(ItemID.BeetleHusk, 5);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.anyIronBar = true;
+			recipe.AddRecipe();
+		}
 		public override bool CanRightClick(){
 			if(Main.mouseItem==null){
 				Item i = item.Clone();

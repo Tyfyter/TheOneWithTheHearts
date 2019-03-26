@@ -1,2 +1,14 @@
 Heart of Magic was supposed to be an overhaul to hearts because I thought of a pun.
 instead the hearts just go over your normal ones because it would be incompatible with a lot of mods and way more complicated otherwise.
+
+Changelog:
+0.1.2:
+fixed health potions not working on mod hearts when all of them are empty.
+unfortunately I can't fix being unable to quick use health potions when at full health without completely re-implimenting quick healing.
+
+0.1.1 (latest released version):
+fixed a few progression bugs
+
+Special thanks to:
+The tmodloader team.
+The 11 people who downloaded this before I even released 0.1.1

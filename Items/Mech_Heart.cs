@@ -47,16 +47,6 @@ namespace TheOneWithTheHearts.Items
             index = -2;
             return false;
         }
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.IronBar, 6);
-			recipe.AddIngredient(ItemID.SoulofMight, 10);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
-		}
 		public override void WhileActive(Player player){
 			base.WhileActive(player);
 			player.statDefense+=20;

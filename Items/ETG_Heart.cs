@@ -28,16 +28,6 @@ namespace TheOneWithTheHearts.Items
 			item.width = (int)(44*item.scale);
 			life = max = 2;
 		}
-		public override void AddRecipes()
-		{
-			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.IronBar, 6);
-			recipe.AddIngredient(ItemID.LifeCrystal, 2);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
-		}
 		public override bool CanRightClick(){
 			if(Main.mouseItem==null){
 				Item i = item.Clone();
@@ -85,7 +75,7 @@ namespace TheOneWithTheHearts.Items
             int plife = life;
 			if(health%10!=0){
 				heal+=health%10;
-				if(heal>30)Heal(10);
+				if(heal>30)Heal(10, display:true);
 			}
             life = (int)(overflow == 1?life+(health/10f):Math.Min(life+(health/10f),max));
             if(overflow >= 2&&(life-plife)*10<health&&life-plife>0){
