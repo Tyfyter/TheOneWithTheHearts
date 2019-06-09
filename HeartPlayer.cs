@@ -13,15 +13,17 @@ namespace TheOneWithTheHearts {
         public List<Item> hearts = new List<Item>(20){null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null};
         public int oldStatLife = 0;
         public int multishot = 1;
-
+        public static PlayerDeathReason ignore = new PlayerDeathReason();
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
-            PlayerDeathReason ignore = new PlayerDeathReason();
             ignore.SourceCustomReason = "this_shouldn't_be_able_to_kill";
-            if(damageSource.SourceCustomReason!=null)if(damageSource.SourceCustomReason.Equals(ignore.SourceCustomReason))return true;
+            if(damageSource.SourceCustomReason!=null)if(damageSource.SourceCustomReason.Equals(ignore.SourceCustomReason)){
+                damageSource.SourceCustomReason = damageSource.SourceCustomReason.Replace(ignore.SourceCustomReason, "");
+                return true;
+            }
             if(getCurrentHeart()>=0)if(TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.type>0)if(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).GetType().IsSubclassOf(typeof(HeartItemBase))){
                 if(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).life<=0)return true;
                 int dmg = damage - Math.Max(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).life,0);
-                ((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).Damage(damage, crit);
+                ((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).Damage(damage, crit, damageSource);
                 //((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).life=Math.Max(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[getCurrentHeart()].Item.modItem).life-damage,0);
                 damage = dmg;
                 if (damage>0){
@@ -55,10 +57,10 @@ namespace TheOneWithTheHearts {
                 }
                 for (int i = 0; i < 20; i++)if(i!=getCurrentHeart())if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem!=null)if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem.mod.Name==mod.Name)if(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem).GetType().IsSubclassOf(typeof(HeartItemBase))){
                     ((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[i].Item.modItem).WhileInactive(player);
-                    a+=i+"i";
+                    //a+=i+"i";
                 }
-                player.chatOverhead.NewMessage("",5);
-                player.chatOverhead.chatText=a;
+                //player.chatOverhead.NewMessage("",5);
+                //player.chatOverhead.chatText=a;
             }
             try {
             for (int i = 0; i < TheOneWithTheHearts.mod.ui.heartSlots.Length; i++)if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.type==ModLoader.GetMod("ModLoader").ItemType("MysteryItem")){

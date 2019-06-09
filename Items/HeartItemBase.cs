@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -36,7 +37,7 @@ namespace TheOneWithTheHearts.Items {
             item.alpha = 255-(int)(75+((life/(float)max)*180));
             return null;
         }
-        public virtual void Damage(int damage, bool crit = false){
+        public virtual void Damage(int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
             CombatText.NewText(Main.player[item.owner].Hitbox, crit ? CombatText.DamagedFriendlyCrit : CombatText.DamagedFriendly, damage);
             life = Math.Max(life-damage,0);
             regentime = 0;
@@ -58,11 +59,20 @@ namespace TheOneWithTheHearts.Items {
                 CombatText.NewText(Main.player[item.owner].Hitbox, CombatText.HealLife, life-plife);
             }
         }
+        public virtual void DoRegen(){
+            life=Math.Min(life+Regen,max);regencdtime=0;
+        }
+        public virtual bool CanDoRegen(Player player){
+            return Main.player[item.owner].statLife>=Main.player[item.owner].statLifeMax2;
+        }
+        public virtual bool CanDoRegenTime(bool active){
+            return active;
+        }
         public virtual void WhileActive(Player player){
-            if(Main.player[item.owner].statLife>=Main.player[item.owner].statLifeMax2)if(++regencdtime>RegenCD&&life<max){
-                life=Math.Min(life+Regen,max);regencdtime=0;
+            if(CanDoRegen(player))if(++regencdtime>RegenCD&&life<max){
+                DoRegen();
             }
-            if(regentime<regentimemax)regentime++;
+            if(regentime<regentimemax&&CanDoRegenTime(true))regentime++;
             if(life>=max){
                 regencdtime = 0;
                 regentime = 0;
@@ -72,11 +82,12 @@ namespace TheOneWithTheHearts.Items {
             bool f = false;
             if(index<=0)f = true;
             if(!f)if(((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[index-1].Item.modItem).life>=((HeartItemBase)TheOneWithTheHearts.mod.ui.heartSlots[index-1].Item.modItem).max)f = true;
-            if(Main.player[item.owner].statLife>=Main.player[item.owner].statLifeMax2)if(f){
+            if(CanDoRegen(player))if(f){
                 if(++regencdtime>RegenCD*3){
                     if(life<max){life++;}regencdtime=0;
                 }
             }
+            if(regentime<regentimemax&&CanDoRegenTime(false))regentime++;
         }
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
 			if(index!=-2){

@@ -45,7 +45,7 @@ namespace TheOneWithTheHearts.Items
 			}
 			return false;
 		}
-		public override void Damage(int damage, bool crit = false){
+		public override void Damage(int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
 			life = Math.Max(life-(crit?2:1),0);
             PlayerDeathReason ignore = new PlayerDeathReason();
             ignore.SourceCustomReason = "this_shouldn't_be_able_to_kill";

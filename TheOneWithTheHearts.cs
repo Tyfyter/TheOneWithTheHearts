@@ -7,7 +7,7 @@ using TheOneWithTheHearts.UI;
 
 namespace TheOneWithTheHearts
 {
-	class TheOneWithTheHearts : Mod
+	public class TheOneWithTheHearts : Mod
 	{
         public static TheOneWithTheHearts mod;
 		public UserInterface heartUI;
@@ -29,7 +29,7 @@ namespace TheOneWithTheHearts
 			int inventoryIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
 			if (inventoryIndex != -1) {
 				layers.Insert(inventoryIndex + 1, new LegacyGameInterfaceLayer(
-					"ExampleMod: Example Person UI",
+					"TheOneWithTheHearts: TheOnlyUIInTheMod",
 					delegate {
 						// If the current UIState of the UserInterface is null, nothing will draw. We don't need to track a separate .visible value.
 						heartUI.Draw(Main.spriteBatch, new GameTime());
@@ -38,6 +38,6 @@ namespace TheOneWithTheHearts
 					InterfaceScaleType.UI)
 				);
 			}
-}
+		}
 	}
 }

@@ -12,7 +12,7 @@ using TheOneWithTheHearts.Items;
 namespace TheOneWithTheHearts.UI
 {
 	// This class represents the UIState for the only UI in the entire mod, that should be obvious enough to make this redundant. 
-	internal class HeartUI : UIState {
+	public class HeartUI : UIState {
         public VanillaItemSlotWrapper[] heartSlots = new VanillaItemSlotWrapper[20];
         public override void OnInitialize(){
             for (int i = 0; i < 20; i++){
