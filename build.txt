@@ -3,6 +3,6 @@ author = Tyfyter (Tyfyter2002 on steam)
 version = 0.1.1
 
 displayName = Heart of Magic
-homepage = https://github.com/Tyfyter/TheOneWithTheHearts
+homepage = https://tyfyter.github.io/
 includeSource = true
 languageVersion = 6
