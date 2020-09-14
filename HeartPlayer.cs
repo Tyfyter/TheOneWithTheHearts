@@ -93,6 +93,7 @@ namespace TheOneWithTheHearts {
             return -1;
         }
         public override TagCompound Save(){
+            if(player == null||hearts==null)return new TagCompound();
             TagCompound r = new TagCompound{
                 {"heart0",hearts[0]},
                 {"heart1",hearts[1]},
