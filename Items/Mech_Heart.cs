@@ -9,12 +9,8 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Mech_Heart : HeartItemBase
 	{
-		public override string ExtraTexture {
-			get{return life>max/2?"_Blue":"_Red";}
-		}
-		public override int RegenCD{
-			get{return (int)(regencd*(((life/(float)max)*0.75f)+0.25f));}
-		}
+		public override string ExtraTexture => "_Extra";
+		public override int RegenCD => (int)(regencd*(((life/(float)max)*0.75f)+0.25f));
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mechanical Heart");

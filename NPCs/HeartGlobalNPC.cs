@@ -9,36 +9,37 @@ namespace TheOneWithTheHearts.NPCs {
         public override bool InstancePerEntity => true;
         public override bool CloneNewInstances => true;
         bool init = true;
+        public override void SetDefaults(NPC npc) {
+                if(npc.aiStyle==1 && npc.ai[1]==58 && Main.rand.Next(10) == 0) npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+        }
         public override void AI(NPC npc){
             if (init){
-                if(npc.aiStyle==1&&npc.ai[1]==58)if(Main.rand.Next(10)==0)npc.ai[1] = mod.ItemType<Slime_Heart>();
+                if(npc.aiStyle==1 && npc.ai[1]==58 && Main.rand.Next(10) == 0) npc.ai[1] = ModContent.ItemType<Slime_Heart>();
                 init = false;
             }
         }
 		public override bool PreNPCLoot(NPC npc){
-			if (npc.type==NPCID.SkeletronPrime||npc.type==NPCID.Retinazer||npc.type==NPCID.Spazmatism||npc.type==NPCID.TheDestroyer||npc.type==NPCID.TheDestroyerBody||npc.type==NPCID.TheDestroyerTail){
-                switch (npc.type){
-                    case 125:
-                    if(!NPC.downedMechBoss2)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),1);//twins
-                    break;
-                    case 126:
-                    if(!NPC.downedMechBoss2)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),1);//twins
-                    break;
-                    case 127:
-                    if(!NPC.downedMechBoss3)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),2);//skelly
-                    break;
-                    case 134:
-                    if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),3);//destroyer
-                    break;
-                    case 135:
-                    if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),3);//destroyer
-                    break;
-                    case 136:
-                    if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), mod.ItemType<Mech_Heart>(),3);//destroyer
-                    break;
-                    default:
-                    break;
-                }
+            switch (npc.type){
+                case NPCID.Retinazer:
+                if(!NPC.downedMechBoss2)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 1);//twins
+                break;
+                case NPCID.Spazmatism:
+                if(!NPC.downedMechBoss2)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 1);//twins
+                break;
+                case NPCID.SkeletronPrime:
+                if(!NPC.downedMechBoss3)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 2);//skelly
+                break;
+                case NPCID.TheDestroyer:
+                if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 3);//destroyer
+                break;
+                case NPCID.TheDestroyerBody:
+                if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 3);//destroyer
+                break;
+                case NPCID.TheDestroyerTail:
+                if(!NPC.downedMechBoss1)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 3);//destroyer
+                break;
+                default:
+                break;
             }
             return true;
 		}
