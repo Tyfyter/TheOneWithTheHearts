@@ -22,8 +22,8 @@ namespace TheOneWithTheHearts.Items
 			item.useStyle = 0;
 			item.maxStack = 1;
 			item.scale = 1/2.5f;
-			item.height = (int)(44*item.scale);
-			item.width = (int)(44*item.scale);
+			item.height = (int)(22*item.scale);
+			item.width = (int)(22*item.scale);
 		}
 		public override void WhileActive(Player player){
 			base.WhileActive(player);

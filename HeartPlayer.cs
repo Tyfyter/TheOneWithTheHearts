@@ -25,7 +25,7 @@ namespace TheOneWithTheHearts {
             while (rDamage>0) {
                 current = GetCurrentHeartWithHealth(cHealth);
                 if (current.heart is null) {
-                    return true;
+                    break;
                 }
                 current.heart.Damage(ref rDamage, crit, damageSource);
                 if (rDamage > current.life) {
@@ -36,6 +36,9 @@ namespace TheOneWithTheHearts {
                     tDamage += rDamage;
                     cHealth -= rDamage;
                     rDamage -= rDamage;
+                }
+                if (current.life <= 0) {
+                    break;
                 }
             }
             damage = tDamage;
@@ -132,12 +135,9 @@ namespace TheOneWithTheHearts {
             return r;
         }
         public override void Load(TagCompound tag){
-            Version lastSaveVersion = new Version(0, 1, 1, 0);
-            if(tag.ContainsKey("saveVersion"))Version.TryParse(tag.Get<string>("saveVersion"), out lastSaveVersion);
-
-            if (lastSaveVersion > new Version(0, 1, 1, 0)) {
+            try {
                 hearts = tag.GetList<Item>("hearts").ToArray();
-            } else {
+            } catch (Exception) {
                 try {
                     for (int i = 0; i < 20; i++) {
                         try {
@@ -147,8 +147,13 @@ namespace TheOneWithTheHearts {
                             hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
                         }
                     }
-                    //for (int i = 0; i < TheOneWithTheHearts.mod.ui.heartSlots.Length; i++)if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.type==ModLoader.GetMod("ModLoader").ItemType("MysteryItem"))TheOneWithTheHearts.mod.ui.heartSlots[i].Item.TurnToAir();
-                } catch (System.Exception) { }
+                } catch (Exception) { }
+            }
+        }
+        public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath) {
+            for (int i = 0; i < 20; i++) {
+                hearts[i] = new Item();
+                hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
             }
         }
     }

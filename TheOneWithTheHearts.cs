@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameInput;
@@ -20,13 +21,24 @@ namespace TheOneWithTheHearts {
 				heartUI = new UserInterface();
 			}
             On.Terraria.Main.DrawInterface_Resources_Life += Main_DrawInterface_Resources_Life;
+            On.Terraria.Player.DropItems += Player_DropItems;
 		}
+
+        private void Player_DropItems(On.Terraria.Player.orig_DropItems orig, Player self) {
+			Item[] hearts = self.GetModPlayer<HeartPlayer>().hearts;
+            for (int i = 0; i < 20; i++) {
+                if (hearts[i].type != ModContent.ItemType<Default_Heart>()) {
+					self.QuickSpawnClonedItem(hearts[i]);
+                }
+            }
+			orig(self);
+        }
 
         private void Main_DrawInterface_Resources_Life(On.Terraria.Main.orig_DrawInterface_Resources_Life orig) {
 			Player player = Main.LocalPlayer;
-            if (player.controlSmart) {
+            /*if (player.controlSmart) {
 				orig();
-            }
+            }*/
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
 			float UI_ScreenAnchorX = Main.screenWidth - 800;
 			//float halfHeartWidth = 11;
@@ -99,12 +111,12 @@ namespace TheOneWithTheHearts {
 				if(currentMaxLife>0)currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-->0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
 				
                 if (Main.playerInventory && !PlayerInput.IgnoreMouseInterface && Main.keyState.IsKeyDown(Main.FavoriteKey)) {
-					Vector2 topLeft = position - new Vector2(11) * heartScale;
-					Vector2 bottomRight = position + new Vector2(11) * heartScale;
+					Vector2 topLeft = position - new Vector2(11);
+					Vector2 bottomRight = position + new Vector2(11);
                     if (Main.MouseScreen.X>topLeft.X && Main.MouseScreen.Y>topLeft.Y && Main.MouseScreen.X<bottomRight.X && Main.MouseScreen.Y<bottomRight.Y) {
 						Main.LocalPlayer.mouseInterface = true;
-						Microsoft.Xna.Framework.Input.Keys oldFav = Main.FavoriteKey;
-                        Main.FavoriteKey = Microsoft.Xna.Framework.Input.Keys.None;
+						Keys oldFav = Main.FavoriteKey;
+                        Main.FavoriteKey = Keys.None;
                         try {
 							ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
                         } finally {
