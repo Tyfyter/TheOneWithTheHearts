@@ -9,9 +9,7 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Slime_Heart : HeartItemBase
 	{
-		public override int Regen {
-			get {return regentime>=regentimemax?regen:0;}
-		}
+        public override int MaxLife => 25;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slimey Heart");
@@ -26,9 +24,6 @@ namespace TheOneWithTheHearts.Items
 			item.scale = 1/2.5f;
 			item.height = (int)(44*item.scale);
 			item.width = (int)(44*item.scale);
-			life = max = 25;
-			regencd = 6;
-			regentimemax = 35;
 		}
 		public override void WhileActive(Player player){
 			base.WhileActive(player);

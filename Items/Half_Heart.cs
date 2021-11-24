@@ -8,7 +8,8 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Half_Heart : HeartItemBase
 	{
-		public override void SetStaticDefaults()
+        public override int MaxLife => 50;
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Half Heart");
 			Tooltip.SetDefault("It doesn't care.");
@@ -22,8 +23,6 @@ namespace TheOneWithTheHearts.Items
 			item.scale = 1/1.5f;
 			item.height = (int)(44*item.scale);
 			item.width = (int)(44*item.scale);
-			life = max = 50;
-			regentime = regentimemax = 60;
 		}
 		/*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
@@ -39,22 +38,8 @@ namespace TheOneWithTheHearts.Items
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
-		public override void Damage(int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
-			Player player = Main.player[item.owner];
-			if(reason.SourceCustomReason!=null){
-				reason.SourceCustomReason+=HeartPlayer.ignore.SourceCustomReason;
-			}else{
-				reason.SourceCustomReason = HeartPlayer.ignore.SourceCustomReason;
-			}
-			int oldlife = life;
-			base.Damage((int)((damage-(player.statDefense*(Main.expertMode?0.75:0.5)))/2), crit, reason);
-			player.Hurt(reason, damage-(oldlife-life), 0);
-		}
-		public override bool CanDoRegen(Player player){
-			return regentime>=regentimemax;
-		}
-		public override bool CanDoRegenTime(bool active){
-			return true;
+		public override void Damage(ref int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
+			damage *= 2;
 		}
 	}
 }

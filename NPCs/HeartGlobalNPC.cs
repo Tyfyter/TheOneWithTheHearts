@@ -10,16 +10,22 @@ namespace TheOneWithTheHearts.NPCs {
         public override bool CloneNewInstances => true;
         bool init = true;
         public override void SetDefaults(NPC npc) {
-                if(npc.aiStyle==1 && npc.ai[1]==58 && Main.rand.Next(10) == 0) npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+            if (npc.aiStyle == 1 && npc.ai[1] == 58) {
+                Main.NewText("SetDefaults works for slimey heart");
+                if(Main.rand.Next(10) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+            }
         }
         public override void AI(NPC npc){
             if (init){
-                if(npc.aiStyle==1 && npc.ai[1]==58 && Main.rand.Next(10) == 0) npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+                if (npc.aiStyle == 1 && npc.ai[1] == 58) {
+                    Main.NewText("slimey heart check");
+                    if(Main.rand.Next(10) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+                }
                 init = false;
             }
         }
 		public override bool PreNPCLoot(NPC npc){
-            switch (npc.type){
+            /*switch (npc.type) {
                 case NPCID.Retinazer:
                 if(!NPC.downedMechBoss2)Item.NewItem(npc.Center, new Vector2(), ModContent.ItemType<Mech_Heart>(), 1);//twins
                 break;
@@ -40,7 +46,7 @@ namespace TheOneWithTheHearts.NPCs {
                 break;
                 default:
                 break;
-            }
+            }*/
             return true;
 		}
     }

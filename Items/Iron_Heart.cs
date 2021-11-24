@@ -7,6 +7,7 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Iron_Heart : HeartItemBase
 	{
+        public override int MaxLife => 15;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Iron Heart");
@@ -21,7 +22,6 @@ namespace TheOneWithTheHearts.Items
 			item.scale = 1/1.5f;
 			item.height = (int)(44*item.scale);
 			item.width = (int)(44*item.scale);
-			life = max = 15;
 		}
 		/*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
