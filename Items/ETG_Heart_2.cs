@@ -46,19 +46,19 @@ namespace TheOneWithTheHearts.Items
 		public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
 			switch (life) {
 				case 4:
-            	if(mod.TextureExists("Items/"+this.GetType().Name))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), position, null, drawColor, 0, new Vector2(), scale, SpriteEffects.None, 0);
+            	if(mod.TextureExists("Items/"+this.GetType().Name))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 3:
-            	if(mod.TextureExists("Items/"+this.GetType().Name+"_3Q"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_3Q"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale, SpriteEffects.None, 0);
+            	if(mod.TextureExists("Items/"+this.GetType().Name+"_3Q"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_3Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 2:
-            	if(mod.TextureExists("Items/"+this.GetType().Name+"_Half"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Half"), position, null, drawColor, 0, new Vector2(), scale, SpriteEffects.None, 0);
+            	if(mod.TextureExists("Items/"+this.GetType().Name+"_Half"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Half"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 1:
-            	if(mod.TextureExists("Items/"+this.GetType().Name+"_1Q"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_1Q"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale, SpriteEffects.None, 0);
+            	if(mod.TextureExists("Items/"+this.GetType().Name+"_1Q"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_1Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				default:
-            	if(mod.TextureExists("Items/"+this.GetType().Name+"_Empty"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Empty"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale, SpriteEffects.None, 0);
+            	if(mod.TextureExists("Items/"+this.GetType().Name+"_Empty"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+"_Empty"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 			}
         }

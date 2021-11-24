@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
 using TheOneWithTheHearts.Items;
@@ -23,14 +24,18 @@ namespace TheOneWithTheHearts {
 
         private void Main_DrawInterface_Resources_Life(On.Terraria.Main.orig_DrawInterface_Resources_Life orig) {
 			Player player = Main.LocalPlayer;
+            if (player.controlSmart) {
+				orig();
+            }
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
 			float UI_ScreenAnchorX = Main.screenWidth - 800;
-			float halfHeartWidth = 11;
+			//float halfHeartWidth = 11;
 			if (player.ghost) {
 				return;
 			}
 			int hearts = heartPlayer.MaxHearts;
 			int goldenHearts = heartPlayer.GoldenHearts;
+			float healthMultiplier = heartPlayer.HealthMultiplier;
 			if (goldenHearts < 0) {
 				goldenHearts = 0;
 			}
@@ -40,17 +45,33 @@ namespace TheOneWithTheHearts {
 			Main.spriteBatch.DrawString(Main.fontMouseText, player.statLife + "/" + player.statLifeMax2, new Vector2((float)(500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.mouseTextColorReal, 0f, new Vector2(Main.fontMouseText.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
 			int rHealth = player.statLife;
 			for (int i = 0; i < heartPlayer.MaxHearts; i++) {
-				HeartItemBase currentHeart = heartPlayer.hearts[i].modItem as HeartItemBase;
-				int rgbValue = 255;
+				HeartItemBase currentHeart = heartPlayer.hearts[i]?.modItem as HeartItemBase;
+				int currentMaxLife = currentHeart?.MaxLife ?? 0;
+                if (currentHeart is null || heartPlayer.hearts[i].IsAir) {
+					currentMaxLife = 0;
+                }
+                float multipliers = 1f;
+                if (currentHeart?.GetsLifeBoosts??false) {
+                    multipliers *= healthMultiplier;
+                    if (goldenHearts > 0) {
+                        multipliers *= 1.25f;
+                    }
+					currentMaxLife = (int)(currentMaxLife * multipliers);
+                }
+				int rgbValue;
 				float heartScale = 1f;
-				bool flag = false;
-				if ((float)player.statLife >= (float)i * UIDisplay_LifePerHeart) {
+				bool beating = false;
+				int heartLife;
+
+				if (rHealth >= currentMaxLife) {
 					rgbValue = 255;
-					if ((float)player.statLife == (float)i * UIDisplay_LifePerHeart) {
-						flag = true;
+					heartLife = currentMaxLife;
+					if (rHealth == currentMaxLife) {
+						beating = true;
 					}
 				} else {
-					float currentPercent = ((float)player.statLife - (float)(i - 1) * UIDisplay_LifePerHeart) / UIDisplay_LifePerHeart;
+					heartLife = rHealth > 0 ? rHealth : 0;
+					float currentPercent = rHealth / (float)currentMaxLife;
 					rgbValue = (int)(30f + 225f * currentPercent);
 					if (rgbValue < 30) {
 						rgbValue = 30;
@@ -60,10 +81,11 @@ namespace TheOneWithTheHearts {
 						heartScale = 0.75f;
 					}
 					if (currentPercent > 0f) {
-						flag = true;
+						beating = true;
 					}
 				}
-				if (flag) {
+				rHealth -= currentMaxLife;
+				if (beating) {
 					heartScale += Main.cursorScale - 1f;
 				}
 				int xOffset = 0;
@@ -73,18 +95,27 @@ namespace TheOneWithTheHearts {
 					yOffset += 26;
 				}
 				int alpha = (int)(rgbValue * 0.9);
-				if (!player.ghost) {
-					if (goldenHearts > 0) {
-						goldenHearts--;
-						Main.spriteBatch.Draw(heart2Texture, new Vector2(500 + 26 * i + xOffset + UI_ScreenAnchorX + 11, 32f + (22 - 22 * heartScale) / 2f + (float)yOffset + 11), new Rectangle(0, 0, 22, 22), new Color(rgbValue, rgbValue, rgbValue, alpha), 0f, new Vector2(11), heartScale, SpriteEffects.None, 0f);
-					} else {
-						Main.spriteBatch.Draw(heartTexture, new Vector2(500 + 26 * i + xOffset + UI_ScreenAnchorX + 11, 32f + (22 - 22 * heartScale) / 2f + (float)yOffset + 11), new Rectangle(0, 0, 22, 2), new Color(rgbValue, rgbValue, rgbValue, alpha), 0f, new Vector2(11), heartScale, SpriteEffects.None, 0f);
-					}
-				}
+				Vector2 position = new Vector2(500 + 26 * i + xOffset + UI_ScreenAnchorX + 11, 32f + (22 - 22 * heartScale) / 2f + (float)yOffset + 11);
+				if(currentMaxLife>0)currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-->0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
+				
+                if (Main.playerInventory && !PlayerInput.IgnoreMouseInterface && Main.keyState.IsKeyDown(Main.FavoriteKey)) {
+					Vector2 topLeft = position - new Vector2(11) * heartScale;
+					Vector2 bottomRight = position + new Vector2(11) * heartScale;
+                    if (Main.MouseScreen.X>topLeft.X && Main.MouseScreen.Y>topLeft.Y && Main.MouseScreen.X<bottomRight.X && Main.MouseScreen.Y<bottomRight.Y) {
+						Main.LocalPlayer.mouseInterface = true;
+						Microsoft.Xna.Framework.Input.Keys oldFav = Main.FavoriteKey;
+                        Main.FavoriteKey = Microsoft.Xna.Framework.Input.Keys.None;
+                        try {
+							ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+                        } finally {
+							Main.FavoriteKey = oldFav;
+                        }
+                    }
+                }
 			}
         }
 
-        public TheOneWithTheHearts() {
+        /*public TheOneWithTheHearts() {
 
 		}
 		public override void UpdateUI(GameTime gameTime) {
@@ -103,6 +134,6 @@ namespace TheOneWithTheHearts {
 					InterfaceScaleType.UI)
 				);
 			}
-		}
+		}*/
 	}
 }

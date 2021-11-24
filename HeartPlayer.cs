@@ -45,7 +45,16 @@ namespace TheOneWithTheHearts {
             HealthMultiplier = player.statLifeMax2 / (float)player.statLifeMax;
             int health = 0;
             for (int i = 0; i < MaxHearts; i++){
-                health += (hearts[i].modItem as HeartItemBase).MaxLife;
+                if(hearts[i].modItem is HeartItemBase heart) {
+                    float multipliers = 1f;
+                    if (heart.GetsLifeBoosts) {
+                        multipliers *= HealthMultiplier;
+                        if (i<GoldenHearts) {
+                            multipliers *= 1.25f;
+                        }
+                    }
+                    health += (int)(heart.MaxLife * multipliers);
+                }
             }
             player.statLifeMax2 = health;
         }
@@ -72,11 +81,20 @@ namespace TheOneWithTheHearts {
             //int a = 0;
             if(health == -1)health = player.statLife;
             for (int i = 0; i < MaxHearts; i++){
-                int heart = (hearts[i].modItem as HeartItemBase).MaxLife;
-                if (health <= heart) {
+                HeartItemBase heart = (hearts[i].modItem as HeartItemBase);
+                int currentMaxLife = heart?.MaxLife ?? 0;
+                float multipliers = 1f;
+                if (heart?.GetsLifeBoosts??false) {
+                    multipliers *= HealthMultiplier;
+                    if (i<GoldenHearts) {
+                        multipliers *= 1.25f;
+                    }
+					currentMaxLife = (int)(currentMaxLife * multipliers);
+                }
+                if (health <= currentMaxLife) {
                     return i;
                 }
-                health -= heart;
+                health -= currentMaxLife;
             }
             return -1;
         }
@@ -90,10 +108,19 @@ namespace TheOneWithTheHearts {
             if(health == -1)health = player.statLife;
             for (int i = 0; i < MaxHearts; i++){
                 HeartItemBase heart = (hearts[i].modItem as HeartItemBase);
-                if (health <= heart.MaxLife) {
+                int currentMaxLife = heart?.MaxLife ?? 0;
+                float multipliers = 1f;
+                if (heart?.GetsLifeBoosts??false) {
+                    multipliers *= HealthMultiplier;
+                    if (i<GoldenHearts) {
+                        multipliers *= 1.25f;
+                    }
+					currentMaxLife = (int)(currentMaxLife * multipliers);
+                }
+                if (health <= currentMaxLife) {
                     return (heart, health);
                 }
-                health -= heart.MaxLife;
+                health -= currentMaxLife;
             }
             return (null, 0);
         }
@@ -113,7 +140,12 @@ namespace TheOneWithTheHearts {
             } else {
                 try {
                     for (int i = 0; i < 20; i++) {
-                        hearts[i] = tag.Get<Item>("heart"+i);
+                        try {
+                            hearts[i] = tag.Get<Item>("heart" + i);
+                        } catch (Exception) {
+                            hearts[i] = new Item();
+                            hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
+                        }
                     }
                     //for (int i = 0; i < TheOneWithTheHearts.mod.ui.heartSlots.Length; i++)if(TheOneWithTheHearts.mod.ui.heartSlots[i].Item.type==ModLoader.GetMod("ModLoader").ItemType("MysteryItem"))TheOneWithTheHearts.mod.ui.heartSlots[i].Item.TurnToAir();
                 } catch (System.Exception) { }

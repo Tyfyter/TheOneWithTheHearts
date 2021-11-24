@@ -26,9 +26,9 @@ namespace TheOneWithTheHearts.Items {
         public virtual void WhileInactive(Player player){}
         public virtual void WhileActive(Player player){}
         public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Pre"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Pre"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale, SpriteEffects.None, 0);
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture), position, null, drawColor, 0, new Vector2(), scale, SpriteEffects.None, 0);
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Extra"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Extra"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, new Vector2(), scale, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Pre"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Pre"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Extra"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Extra"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
