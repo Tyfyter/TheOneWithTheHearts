@@ -23,9 +23,8 @@ namespace TheOneWithTheHearts.Items
 			item.consumable = false;
 			item.useStyle = 0;
 			item.maxStack = 1;
-			item.scale = 1/1.5f;
-			item.height = (int)(44*item.scale);
-			item.width = (int)(44*item.scale);
+			item.height = 22;
+			item.width = 22;
 		}
 		/ *
 		public override void ModifyTooltips(List<TooltipLine> tooltips){

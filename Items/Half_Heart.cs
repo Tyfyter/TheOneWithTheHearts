@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -8,11 +9,11 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Half_Heart : HeartItemBase
 	{
-        public override int MaxLife => 50;
+        public override int MaxLife => 10;
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Half Heart");
-			Tooltip.SetDefault("It doesn't care.");
+			Tooltip.SetDefault("10 HP\nIt doesn't care.");
 		}
 		public override void SetDefaults()
 		{
@@ -20,8 +21,8 @@ namespace TheOneWithTheHearts.Items
 			item.consumable = false;
 			item.useStyle = 0;
 			item.maxStack = 1;
-			item.height = (int)(22*item.scale);
-			item.width = (int)(22*item.scale);
+			item.height = 22;
+            item.width = 22;
 		}
 		/*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
@@ -37,8 +38,8 @@ namespace TheOneWithTheHearts.Items
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
-		public override void Damage(ref int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
-			damage *= 2;
+		public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
+			damage -= Math.Min(damage, 20)/2;
 		}
 	}
 }

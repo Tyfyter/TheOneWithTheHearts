@@ -9,11 +9,11 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Slime_Heart : HeartItemBase
 	{
-        public override int MaxLife => 25;
+        public override int MaxLife => 20;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slimey Heart");
-			Tooltip.SetDefault("It kind of makes you question slime anatomy.");
+			Tooltip.SetDefault("20 HP\n+50% health regeneration\nIncreases fall resistance and falling speed\n'It kind of makes you question slime anatomy.'");
 		}
 		public override void SetDefaults()
 		{
@@ -22,18 +22,19 @@ namespace TheOneWithTheHearts.Items
 			item.useStyle = 0;
 			item.maxStack = 1;
 			item.scale = 1/2.5f;
-			item.height = (int)(22*item.scale);
-			item.width = (int)(22*item.scale);
+			item.height = 22;
+			item.width = 22;
 		}
 		public override void WhileActive(Player player){
-			base.WhileActive(player);
-			player.noFallDmg = true;
-			player.maxFallSpeed*=1.1f;
+			player.extraFall = 10;
+			player.maxFallSpeed *= 1.1f;
 		}
+        public override void UpdateNaturalRegen(Player player, ref float regen) {
+			regen *= 1.5f;
+        }
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
-            Rectangle rect = new Rectangle((int)item.position.X,(int)item.position.Y,item.width,item.height);
             if(mod.TextureExists("Items/"+this.GetType().Name)&&false){
-				spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), item.position-Main.screenPosition, rect, Color.White, rotation, new Vector2(22,22), scale/2.5f, SpriteEffects.None, 0);
+				spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), item.position-Main.screenPosition, null, Color.White, rotation, new Vector2(22,22), scale/2.5f, SpriteEffects.None, 0);
 			}else{
                 scale*=item.scale;
 				return true;

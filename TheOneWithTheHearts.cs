@@ -22,7 +22,14 @@ namespace TheOneWithTheHearts {
 			}
             On.Terraria.Main.DrawInterface_Resources_Life += Main_DrawInterface_Resources_Life;
             On.Terraria.Player.DropItems += Player_DropItems;
+            On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
 		}
+
+        private void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self) {
+			int life = self.statLife;
+			orig(self);
+			self.statLife = life + self.GetModPlayer<HeartPlayer>().MultiplyLifeRegen(self.statLife - life);
+        }
 
         private void Player_DropItems(On.Terraria.Player.orig_DropItems orig, Player self) {
 			Item[] hearts = self.GetModPlayer<HeartPlayer>().hearts;
@@ -118,6 +125,9 @@ namespace TheOneWithTheHearts {
 						Keys oldFav = Main.FavoriteKey;
                         Main.FavoriteKey = Keys.None;
                         try {
+                            if (heartPlayer.hearts[i] is null) {
+								heartPlayer.hearts[i] = new Item();
+                            }
 							ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
                         } finally {
 							Main.FavoriteKey = oldFav;

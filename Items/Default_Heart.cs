@@ -14,7 +14,7 @@ namespace TheOneWithTheHearts.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Heart");
-			Tooltip.SetDefault("");
+			Tooltip.SetDefault("20 HP");
 		}
 		public override void SetDefaults() {
 			item.CloneDefaults(ItemID.LifeCrystal);

@@ -17,17 +17,20 @@ namespace TheOneWithTheHearts {
         public Item[] hearts = new Item[20];
         public int oldStatLife = 0;
         public int multishot = 1;
+        public float partialRegen = 0;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
             int rDamage = damage;
             int cHealth = player.statLife;
             int tDamage = 0;
-            (HeartItemBase heart, int life) current;
+            (int heart, int life) current;
+            HeartItemBase currentHeart;
             while (rDamage>0) {
                 current = GetCurrentHeartWithHealth(cHealth);
-                if (current.heart is null) {
+                if (current.heart == -1) {
                     break;
                 }
-                current.heart.Damage(ref rDamage, crit, damageSource);
+                currentHeart = hearts[current.heart].modItem as HeartItemBase;
+                currentHeart.Damage(player, ref rDamage, crit, damageSource);
                 if (rDamage > current.life) {
                     tDamage += current.life;
                     cHealth -= current.life;
@@ -38,17 +41,71 @@ namespace TheOneWithTheHearts {
                     rDamage -= rDamage;
                 }
                 if (current.life <= 0) {
+                    tDamage += rDamage;
                     break;
                 }
             }
             damage = tDamage;
-            return true;
+            return damage > 0;
+        }
+        public override void GetHealLife(Item item, bool quickHeal, ref int healValue) {
+            int rHealing = healValue;
+            int cHealth = player.statLife;
+            int tHealing = 0;
+            (int heart, int life) current;
+            HeartItemBase currentHeart;
+            while (rHealing>0) {
+                current = GetCurrentHeartWithHealth(cHealth+1);
+                if (current.heart == -1) {
+                    break;
+                }
+                currentHeart = hearts[current.heart].modItem as HeartItemBase;
+                currentHeart.Heal(ref rHealing);
+                float multipliers = 1f;
+                if (currentHeart.GetsLifeBoosts) {
+                    multipliers *= HealthMultiplier;
+                    if (current.heart<GoldenHearts) {
+                        multipliers *= 1.25f;
+                    }
+                }
+                int maxLife = (int)(currentHeart.MaxLife * multipliers);
+                int currentLife = current.life - 1;
+                if (rHealing > maxLife-currentLife) {
+                    tHealing += maxLife-currentLife;
+                    cHealth += maxLife-currentLife;
+                    rHealing -= maxLife-currentLife;
+                    if (maxLife-currentLife <= 0) {
+                        cHealth += 1;
+                    }
+                } else {
+                    tHealing += rHealing;
+                    cHealth += rHealing;
+                    rHealing -= rHealing;
+                }
+                if (rHealing <= 1) {
+                    break;
+                }
+            }
+            healValue = tHealing;
+        }
+        public override void NaturalLifeRegen(ref float regen) {
+            (hearts[GetCurrentHeart(player.statLife+1)]?.modItem as HeartItemBase)?.UpdateNaturalRegen(player, ref regen);
+        }
+        public int MultiplyLifeRegen(int regen) {
+            int index = GetCurrentHeart(player.statLife);
+            if (index < 0) {
+                return regen;
+            }
+            partialRegen += ((HeartItemBase)hearts[index].modItem).ModifyLifeRegen(player, regen);
+            int actualRegen = (int)(partialRegen - (partialRegen % 1));
+            partialRegen -= actualRegen;
+            return actualRegen;
         }
         public override void PostUpdateMiscEffects() {
             HealthMultiplier = player.statLifeMax2 / (float)player.statLifeMax;
             int health = 0;
             for (int i = 0; i < MaxHearts; i++){
-                if(hearts[i].modItem is HeartItemBase heart) {
+                if(hearts[i]?.modItem is HeartItemBase heart) {
                     float multipliers = 1f;
                     if (heart.GetsLifeBoosts) {
                         multipliers *= HealthMultiplier;
@@ -63,7 +120,7 @@ namespace TheOneWithTheHearts {
         }
         public override void PostUpdate(){
             if(!Main.gameInactive){
-                multishot = 1;
+                multishot = 0;
                 int currentHeart = GetCurrentHeart();
                 for (int i = 0; i < MaxHearts; i++){
                     if (i == currentHeart) {
@@ -83,8 +140,9 @@ namespace TheOneWithTheHearts {
         public int GetCurrentHeart(int health = -1){
             //int a = 0;
             if(health == -1)health = player.statLife;
+            int highestIndex = 0;
             for (int i = 0; i < MaxHearts; i++){
-                HeartItemBase heart = (hearts[i].modItem as HeartItemBase);
+                HeartItemBase heart = (hearts[i]?.modItem as HeartItemBase);
                 int currentMaxLife = heart?.MaxLife ?? 0;
                 float multipliers = 1f;
                 if (heart?.GetsLifeBoosts??false) {
@@ -94,19 +152,22 @@ namespace TheOneWithTheHearts {
                     }
 					currentMaxLife = (int)(currentMaxLife * multipliers);
                 }
+                if (currentMaxLife > 0) {
+                    highestIndex = i;
+                }
                 if (health <= currentMaxLife) {
                     return i;
                 }
                 health -= currentMaxLife;
             }
-            return -1;
+            return highestIndex;
         }
         /// <summary>
         /// Gets the heart that would be active at the specified health value, and the amount of health contained in that heart
         /// </summary>
         /// <param name="health">leave at -1 to use the player's current health</param>
         /// <returns></returns>
-        public (HeartItemBase, int) GetCurrentHeartWithHealth(int health = -1){
+        public (int, int) GetCurrentHeartWithHealth(int health = -1){
             //int a = 0;
             if(health == -1)health = player.statLife;
             for (int i = 0; i < MaxHearts; i++){
@@ -121,16 +182,16 @@ namespace TheOneWithTheHearts {
 					currentMaxLife = (int)(currentMaxLife * multipliers);
                 }
                 if (health <= currentMaxLife) {
-                    return (heart, health);
+                    return (i, health);
                 }
                 health -= currentMaxLife;
             }
-            return (null, 0);
+            return (-1, 0);
         }
         public override TagCompound Save(){
             if(hearts is null)return new TagCompound();
             TagCompound r = new TagCompound{
-                {"hearts", hearts.ToList()}
+                {"hearts", hearts.Select(v=>v??new Item()).ToList()}
             };
             return r;
         }

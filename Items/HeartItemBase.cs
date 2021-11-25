@@ -11,9 +11,6 @@ namespace TheOneWithTheHearts.Items {
     public class HeartItemBase : ModItem {
         public virtual int MaxLife => 20;
         public virtual bool GetsLifeBoosts => true;
-        public virtual string ExtraTexture {
-            get {return "";}
-        }
         public int index = -2;
         public override bool CloneNewInstances{
 			get { return true; }
@@ -22,13 +19,26 @@ namespace TheOneWithTheHearts.Items {
             if(name == "HeartItemBase")return false;
             return true;
         }
-        public virtual void Damage(ref int damage, bool crit = false, PlayerDeathReason reason = default){}
+        public virtual void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default){}
+        public virtual void Heal(ref int healing){}
+        public virtual void UpdateNaturalRegen(Player player, ref float regen){}
+        /// <summary>
+        /// allows a heart to modify health regeneration from buffs and accessories, returns the regen parameter by default
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="regen"></param>
+        /// <returns>the amount of life the player will regenerate</returns>
+        public virtual float ModifyLifeRegen(Player player, float regen){
+            return regen;
+        }
         public virtual void WhileInactive(Player player){}
         public virtual void WhileActive(Player player){}
         public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Pre"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Pre"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
-            if(mod.TextureExists("Items/"+this.GetType().Name+ExtraTexture+"_Extra"))spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name+ExtraTexture+"_Extra"), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
+            if (golden && mod.TextureExists("Items/Golden/" + this.GetType().Name)) {
+                spriteBatch.Draw(mod.GetTexture("Items/Golden/"+this.GetType().Name), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+            } else {
+                spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+            }
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
