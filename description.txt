@@ -2,6 +2,9 @@ Heart of Magic was supposed to be an overhaul to hearts because I thought of a p
 instead the hearts just go over your normal ones because it would be incompatible with a lot of mods and way more complicated otherwise.
 
 Changelog:
+0.5.0.1:
+fixed recipes
+
 0.5:
 completely rewrote the majority of the mod
 

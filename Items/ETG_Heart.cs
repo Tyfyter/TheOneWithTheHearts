@@ -16,7 +16,7 @@ namespace TheOneWithTheHearts.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Familliar Heart");
-			Tooltip.SetDefault("2 HP\nReduces damage taken to 1\nReduces natural life regeneration by 100%");
+			Tooltip.SetDefault("2 HP\nWhen active:\nReduces damage taken to 1\nReduces natural life regeneration by 100%");
 		}
 		public override void SetDefaults()
 		{
@@ -26,6 +26,16 @@ namespace TheOneWithTheHearts.Items
 			item.maxStack = 1;
 			item.height = 22;
 			item.width = 22;
+		}
+		public override void AddRecipes() {
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
+			//recipe.AddIngredient(ModContent.ItemType<Mech_Heart>(), 1);
+			recipe.AddIngredient(ItemID.MeteorShot, 15);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.SetResult(this);
+			recipe.anyIronBar = true;
+			recipe.AddRecipe();
 		}
         public override void UpdateNaturalRegen(Player player, ref float regen) {
 			regen = 0;

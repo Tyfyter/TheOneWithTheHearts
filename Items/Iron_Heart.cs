@@ -12,7 +12,7 @@ namespace TheOneWithTheHearts.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Iron Heart");
-			Tooltip.SetDefault("Reduces damage taken by 5\nReduces natural life regeneration by 25%\nThis is not a modded sword.");
+			Tooltip.SetDefault("15 HP\nWhen active:\nReduces damage taken by 5\nReduces natural life regeneration by 15%\n'This is not a modded sword.'");
 		}
 		public override void SetDefaults()
 		{
@@ -27,7 +27,7 @@ namespace TheOneWithTheHearts.Items
 			damage -= 5;
         }
         public override void UpdateNaturalRegen(Player player, ref float regen) {
-			regen *= 0.75f;
+			regen *= 0.85f;
         }
         /*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
@@ -36,8 +36,8 @@ namespace TheOneWithTheHearts.Items
         public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 2);
 			recipe.AddIngredient(ItemID.IronBar, 6);
-			recipe.AddIngredient(ItemID.LifeCrystal, 2);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this);
 			recipe.anyIronBar = true;

@@ -13,7 +13,7 @@ namespace TheOneWithTheHearts.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slimey Heart");
-			Tooltip.SetDefault("20 HP\n+50% health regeneration\nIncreases fall resistance and falling speed\n'It kind of makes you question slime anatomy.'");
+			Tooltip.SetDefault("20 HP\nWhen active:\n+50% health regeneration\nIncreases fall resistance and falling speed\n'It kind of makes you question slime anatomy.'");
 		}
 		public override void SetDefaults()
 		{

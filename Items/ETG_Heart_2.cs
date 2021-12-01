@@ -17,7 +17,7 @@ namespace TheOneWithTheHearts.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Four-chambered Heart");
-			Tooltip.SetDefault("4 HP\nReduces damage taken to 1\nReduces natural life regeneration by 100%\n. → ⁛");
+			Tooltip.SetDefault("4 HP\nWhen active:\nReduces damage taken to 1\nReduces natural life regeneration by 100%\n'. → ⁛'");
 		}
 		public override void SetDefaults()
 		{

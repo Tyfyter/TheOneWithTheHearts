@@ -13,7 +13,7 @@ namespace TheOneWithTheHearts.Items
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Half Heart");
-			Tooltip.SetDefault("10 HP\nIt doesn't care.");
+			Tooltip.SetDefault("10 HP\n'It doesn't care.'");
 		}
 		public override void SetDefaults()
 		{
@@ -31,10 +31,11 @@ namespace TheOneWithTheHearts.Items
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.IronBar, 6);
-			recipe.AddIngredient(ItemID.LifeCrystal, 2);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
+			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
+			recipe.AddIngredient(ItemID.IronBar, 3);
+			recipe.AddTile(TileID.Sawmill);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this, 2);
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}

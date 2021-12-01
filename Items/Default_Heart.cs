@@ -31,9 +31,16 @@ namespace TheOneWithTheHearts.Items
 		public override void AddRecipes() {
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
-			recipe.AddTile(TileID.WorkBenches);
+			recipe.AddIngredient(ItemID.RottenChunk, 5);
+			recipe.AddTile(TileID.Hellforge);
 			recipe.SetResult(this);
-			recipe.anyIronBar = true;
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LifeCrystal, 1);
+			recipe.AddIngredient(ItemID.Vertebrae, 5);
+			recipe.AddTile(TileID.Hellforge);
+			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}
         public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){

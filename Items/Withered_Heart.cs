@@ -9,11 +9,11 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Withered_Heart : HeartItemBase
 	{
-        public override int MaxLife => 8;
+        public override int MaxLife => 12;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Withered Heart");
-			Tooltip.SetDefault("8 HP\n");
+			Tooltip.SetDefault("12 HP\n");
 		}
 		public override void SetDefaults()
 		{
@@ -24,6 +24,22 @@ namespace TheOneWithTheHearts.Items
 			item.height = 22;
 			item.width = 22;
 		}
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
+			recipe.AddIngredient(ItemID.VilePowder, 5);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
+			recipe.AddIngredient(ItemID.ViciousPowder, 5);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
 			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().witheredHearts;
             for (int i = tooltips.Count-1; i > 0; i++) {
@@ -31,7 +47,7 @@ namespace TheOneWithTheHearts.Items
 					GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
 					string text = "+1 minion slot";
                     if (minionSlots>1) {
-						text = $"+{minionSlots} minion slots";
+						text = $"From equipped Withered Hearts:\n+{minionSlots} minion slots";
                     }
                     if (minionDamage>0) {
 						text += $"\n+{System.Math.Round(minionDamage*100)}% minion damage";

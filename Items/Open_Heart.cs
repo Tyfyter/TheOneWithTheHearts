@@ -10,11 +10,11 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Open_Heart : HeartItemBase
 	{
-        public override int MaxLife => 80;
+        public override int MaxLife => 40;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Open Heart");
-			Tooltip.SetDefault("80 HP\nReduces natural life regeneration by 100%\nThis is not a modded sword.");
+			Tooltip.SetDefault("40 HP\nWhen active:\nReduces natural life regeneration by 100%");
 		}
 		public override void SetDefaults()
 		{
@@ -44,15 +44,18 @@ namespace TheOneWithTheHearts.Items
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.ShadowScale, 5);
-			recipe.AddIngredient(ItemID.LifeCrystal, 2);
+			recipe.AddIngredient(ItemID.IronBar, 3);
 			recipe.AddTile(TileID.DemonAltar);
 			recipe.SetResult(this);
+			recipe.anyIronBar = true;
 			recipe.AddRecipe();
+
 			recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.TissueSample, 5);
-			recipe.AddIngredient(ItemID.LifeCrystal, 2);
+			recipe.AddIngredient(ItemID.IronBar, 3);
 			recipe.AddTile(TileID.DemonAltar);
 			recipe.SetResult(this);
+			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
 	}
