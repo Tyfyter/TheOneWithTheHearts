@@ -17,6 +17,7 @@ namespace TheOneWithTheHearts {
         public Item[] hearts = new Item[20];
         public int oldStatLife = 0;
         public int multishot = 1;
+        public int witheredHearts = 0;
         public float partialRegen = 0;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
             int rDamage = damage;
@@ -116,11 +117,15 @@ namespace TheOneWithTheHearts {
                     health += (int)(heart.MaxLife * multipliers);
                 }
             }
+            Withered_Heart.GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
+            player.maxMinions += minionSlots;
+            player.minionDamage += minionDamage;
             player.statLifeMax2 = health;
         }
         public override void PostUpdate(){
             if(!Main.gameInactive){
                 multishot = 0;
+                witheredHearts = 0;
                 int currentHeart = GetCurrentHeart();
                 for (int i = 0; i < MaxHearts; i++){
                     if (i == currentHeart) {
