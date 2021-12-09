@@ -19,9 +19,9 @@ namespace TheOneWithTheHearts {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
 			tasks.Insert(tasks.Count - 1, new PassLegacy("Heart Shrine", (GenerationProgress progress) => {
 				string[] map = new string[] {
-					"000000000_0000000000000000_000000000",
-					"00000_________00000000_________00000",
-					"0000___________000000___________0000",
+					"111000000_0000000000000000_000001111",
+					"11000_________00000000_________00011",
+					"1000___________000000___________0001",
 					"000_____________0000_____________000",
 					"00_______________00_______________00",
 					"0__________________________________0",
@@ -34,24 +34,25 @@ namespace TheOneWithTheHearts {
 					"0_______ss_______________ss________0",
 					"0__________________________________0",
 					"00________________________________00",
-					"000_____________h________________000",
-					"0000____________ss______________0000",
-					"00000___________ss_____________00000",
-					"000000________________________000000",
-					"0000000______________________0000000",
-					"00000000____________________00000000",
-					"000000000__________________000000000",
-					"0000000000________________0000000000",
-					"00000000000______________00000000000",
-					"000000000000____________000000000000",
-					"0000000000000__________0000000000000",
-					"00000000000000________00000000000000",
-					"000000000000000______000000000000000",
-					"0000000000000000____0000000000000000",
-					"00000000000000000__00000000000000000",
+					"100______________h_______________001",
+					"1100_____________ss_____________0011",
+					"11100____________ss____________00110",
+					"111100________________________001111",
+					"1111100______________________0011111",
+					"11111100____________________00111111",
+					"111111100__________________001111111",
+					"1111111100________________0011111111",
+					"11111111100______________00111111111",
+					"111111111100____________001111111111",
+					"1111111111100__________0011111111111",
+					"11111111111100________00111111111111",
+					"111111111111100______001111111111111",
+					"1111111111111100____0011111111111111",
+					"11111111111111100__00111111111111111",
 				};
 				Structure structure = new Structure(map,
 					('0', new StructureTile(0, StructureTilePlacementType.Nothing)),
+					('1', new StructureTile(0, StructureTilePlacementType.Nothing)),
 					('_', new StructureTile(0, StructureTilePlacementType.ReplaceOld|StructureTilePlacementType.Deactivate)),
 					('s', new StructureTile(TileID.SnowBlock, StructureTilePlacementType.ReplaceOld)),
 					('p', new StructureTile(TileID.Pots, StructureTilePlacementType.ReplaceOld|StructureTilePlacementType.MultiTile, style:WorldGen.genRand.Next(4, 7))),
@@ -65,44 +66,9 @@ namespace TheOneWithTheHearts {
                 while (remainingShrineCount>0) {
 					shrineX = WorldGen.genRand.Next(0, Main.maxTilesX-30);
 					shrineY = WorldGen.genRand.Next((int)Main.worldSurface, Main.maxTilesY-30);
-					int validAnchors = 0;
-                    switch(IsValidHeartShrineTile(shrineX, shrineY)) {
-						case true:
-						validAnchors++;
-						break;
-						case null:
-						break;
-						case false:
+                    if (CheckHeartPlacement(shrineX, shrineY, map) < 69 * 1.5f) {
 						continue;
                     }
-                    switch(IsValidHeartShrineTile(shrineX+36, shrineY)) {
-						case true:
-						validAnchors++;
-						break;
-						case null:
-						break;
-						case false:
-						continue;
-                    }
-                    switch(IsValidHeartShrineTile(shrineX, shrineY+30)) {
-						case true:
-						validAnchors++;
-						break;
-						case null:
-						break;
-						case false:
-						continue;
-                    }
-                    switch(IsValidHeartShrineTile(shrineX+36, shrineY+30)) {
-						case true:
-						validAnchors++;
-						break;
-						case null:
-						break;
-						case false:
-						continue;
-                    }
-                    if (validAnchors < 3)continue;
                     if (structure.Place(shrineX, shrineY) > 0) {
 						while (structure.createdChests.Count > 0) {
 							int chestIndex = structure.createdChests.Dequeue();
@@ -114,21 +80,51 @@ namespace TheOneWithTheHearts {
 							chest.item[3].SetDefaults(ItemID.CopperCoin);
 							chest.item[3].stack = WorldGen.genRand.Next(0, 69);
                         }
+						WorldGen.PlacePot(shrineX+8, shrineY+10, 28, WorldGen.genRand.Next(4, 7));
+						WorldGen.PlacePot(shrineX+25, shrineY+10, 28, WorldGen.genRand.Next(4, 7));
 						remainingShrineCount--;
                     }
                 }
 			}));
         }
+		public static int CheckHeartPlacement(int i, int j, string[] _map) {
+            char[] line;
+            int i1,j1;
+            int changedTilesCount = 0;
+            for(int j0 = 0; j0 < _map.Length; j0++) {
+                j1 = j + j0;
+                if (j1 >= Main.maxTilesY) {
+					return 0;
+                }
+                line = _map[j0].ToCharArray();
+                for(int i0 = 0; i0 < line.Length; i0++) {
+                    i1 = i + i0;
+					if (i1 >= Main.maxTilesX) {
+						return 0;
+					}
+                    if (line[i0] == '0') {
+                        switch (IsValidHeartShrineTile(i1, j1)) {
+							case true:
+							changedTilesCount++;
+							break;
+							case false:
+							changedTilesCount--;
+							break;
+                        }
+                    }
+                }
+            }
+			return changedTilesCount;
+        }
 		public static bool? IsValidHeartShrineTile(int x, int y) {
-            if (Main.tile[x, y].active()) {
+            if (!Main.tile[x, y].active()) {
 				return null;
             }
             switch (Main.tile[x, y].type) {
 				case TileID.SnowBlock:
 				case TileID.IceBlock:
-				return true;
 				case TileID.Slush:
-				return null;
+				return true;
             }
 			return false;
         }

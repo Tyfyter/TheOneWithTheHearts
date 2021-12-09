@@ -19,6 +19,7 @@ namespace TheOneWithTheHearts {
         public int multishot = 1;
         public int witheredHearts = 0;
         public float partialRegen = 0;
+        public bool frozenImmune = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
             int rDamage = damage;
             int cHealth = player.statLife;
@@ -104,6 +105,7 @@ namespace TheOneWithTheHearts {
         }
         public override void PostUpdateMiscEffects() {
             HealthMultiplier = player.statLifeMax2 / (float)player.statLifeMax;
+            int currentHeart = GetCurrentHeart();
             int health = 0;
             for (int i = 0; i < MaxHearts; i++){
                 if(hearts[i]?.modItem is HeartItemBase heart) {
@@ -115,26 +117,29 @@ namespace TheOneWithTheHearts {
                         }
                     }
                     health += (int)(heart.MaxLife * multipliers);
+                    if (i == currentHeart) {
+                        heart.WhileActive(player);
+                    } else {
+                        heart.WhileInactive(player);
+                    }
                 }
             }
             Withered_Heart.GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
             player.maxMinions += minionSlots;
             player.minionDamage += minionDamage;
             player.statLifeMax2 = health;
+            multishot = 0;
+            witheredHearts = 0;
+        }
+        public override void ResetEffects() {
+            frozenImmune = false;
+        }
+        public override void PreUpdate() {
+            if (frozenImmune && player.frozen) {
+                player.frozen = false;
+            }
         }
         public override void PostUpdate(){
-            if(!Main.gameInactive){
-                multishot = 0;
-                witheredHearts = 0;
-                int currentHeart = GetCurrentHeart();
-                for (int i = 0; i < MaxHearts; i++){
-                    if (i == currentHeart) {
-                        (hearts[i]?.modItem as HeartItemBase)?.WhileActive(player);
-                    } else {
-                        (hearts[i]?.modItem as HeartItemBase)?.WhileInactive(player);
-                    }
-                }
-            }
             oldStatLife = player.statLife;
         }
         /// <summary>

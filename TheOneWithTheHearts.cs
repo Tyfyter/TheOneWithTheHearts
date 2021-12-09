@@ -15,6 +15,7 @@ namespace TheOneWithTheHearts {
         public static TheOneWithTheHearts mod;
 		public UserInterface heartUI;
 		public HeartUI ui;
+		bool disableCombatText = false;
 		public override void Load() {
             mod = this;
 			if (!Main.dedServ) {
@@ -23,12 +24,26 @@ namespace TheOneWithTheHearts {
             On.Terraria.Main.DrawInterface_Resources_Life += Main_DrawInterface_Resources_Life;
             On.Terraria.Player.DropItems += Player_DropItems;
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
+            On.Terraria.CombatText.NewText_Rectangle_Color_int_bool_bool += CombatText_NewText;
+			disableCombatText = false;
 		}
 
         private void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self) {
 			int life = self.statLife;
+			disableCombatText = true;
 			orig(self);
+			disableCombatText = false;
 			self.statLife = life + self.GetModPlayer<HeartPlayer>().MultiplyLifeRegen(self.statLife - life);
+            if (self.statLife < life) {
+				CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, life - self.statLife, dramatic: false, dot: true);
+            }
+        }
+
+        private int CombatText_NewText(On.Terraria.CombatText.orig_NewText_Rectangle_Color_int_bool_bool orig, Rectangle location, Color color, int amount, bool dramatic, bool dot) {
+            if (disableCombatText) {
+				return 100;
+            }
+			return orig(location, color, amount, dramatic, dot);
         }
 
         private void Player_DropItems(On.Terraria.Player.orig_DropItems orig, Player self) {

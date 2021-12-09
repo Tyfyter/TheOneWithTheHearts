@@ -37,7 +37,7 @@ namespace TheOneWithTheHearts.Items {
             if (golden && mod.TextureExists("Items/Golden/" + this.GetType().Name)) {
                 spriteBatch.Draw(mod.GetTexture("Items/Golden/"+this.GetType().Name), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             } else {
-                spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(Main.itemTexture[item.type], position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             }
         }
 
