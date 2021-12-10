@@ -3,7 +3,8 @@ Hold your favorite key to interact with your hearts
 
 Changelog:
 0.5.1:
-bugfixes
+added "Heart of Ice"
+bugfixes and improvements
 fixed description
 
 0.5.0.1:
