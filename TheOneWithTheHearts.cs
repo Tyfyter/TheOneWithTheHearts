@@ -132,18 +132,22 @@ namespace TheOneWithTheHearts {
 				Vector2 position = new Vector2(500 + 26 * i + xOffset + UI_ScreenAnchorX + 11, 32f + (22 - 22 * heartScale) / 2f + (float)yOffset + 11);
 				if(currentMaxLife>0)currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-->0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
 				
-                if (Main.playerInventory && !PlayerInput.IgnoreMouseInterface && Main.keyState.IsKeyDown(Main.FavoriteKey)) {
+                if (!PlayerInput.IgnoreMouseInterface && Main.keyState.IsKeyDown(Main.FavoriteKey)) {
 					Vector2 topLeft = position - new Vector2(11);
 					Vector2 bottomRight = position + new Vector2(11);
                     if (Main.MouseScreen.X>topLeft.X && Main.MouseScreen.Y>topLeft.Y && Main.MouseScreen.X<bottomRight.X && Main.MouseScreen.Y<bottomRight.Y) {
-						Main.LocalPlayer.mouseInterface = true;
 						Keys oldFav = Main.FavoriteKey;
                         Main.FavoriteKey = Keys.None;
                         try {
                             if (heartPlayer.hearts[i] is null) {
 								heartPlayer.hearts[i] = new Item();
                             }
-							ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+                            if (Main.playerInventory) {
+								Main.LocalPlayer.mouseInterface = true;
+								ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+                            } else {
+								ItemSlot.MouseHover(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+                            }
                         } finally {
 							Main.FavoriteKey = oldFav;
                         }

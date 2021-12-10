@@ -1,7 +1,11 @@
-Heart of Magic was supposed to be an overhaul to hearts because I thought of a pun.
-instead the hearts just go over your normal ones because it would be incompatible with a lot of mods and way more complicated otherwise.
+Heart of Magic is an overhaul to hearts because I thought of a pun.
+Hold your favorite key to interact with your hearts
 
 Changelog:
+0.5.1:
+bugfixes
+fixed description
+
 0.5.0.1:
 fixed recipes
 

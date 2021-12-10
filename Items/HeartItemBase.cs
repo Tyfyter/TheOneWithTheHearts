@@ -11,6 +11,7 @@ namespace TheOneWithTheHearts.Items {
     public class HeartItemBase : ModItem {
         public virtual int MaxLife => 20;
         public virtual bool GetsLifeBoosts => true;
+        public virtual string GoldenTexture => Texture.Replace("Items", "Items/Golden");
         public int index = -2;
         public override bool CloneNewInstances{
 			get { return true; }
@@ -19,7 +20,13 @@ namespace TheOneWithTheHearts.Items {
             if(name == "HeartItemBase")return false;
             return true;
         }
-        public virtual void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default){}
+        public override void AutoStaticDefaults() {
+            base.AutoStaticDefaults();
+            if (ModContent.TextureExists(GoldenTexture)) {
+                Main.itemTexture[item.type].Tag = ModContent.GetTexture(GoldenTexture);
+            }
+        }
+        public virtual void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default){}
         public virtual void Heal(ref int healing){}
         public virtual void UpdateNaturalRegen(Player player, ref float regen){}
         /// <summary>
@@ -34,8 +41,8 @@ namespace TheOneWithTheHearts.Items {
         public virtual void WhileInactive(Player player){}
         public virtual void WhileActive(Player player){}
         public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
-            if (golden && mod.TextureExists("Items/Golden/" + this.GetType().Name)) {
-                spriteBatch.Draw(mod.GetTexture("Items/Golden/"+this.GetType().Name), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+            if (golden && Main.itemTexture[item.type].Tag is Texture2D goldenTexture) {
+                spriteBatch.Draw(goldenTexture, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             } else {
                 spriteBatch.Draw(Main.itemTexture[item.type], position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             }

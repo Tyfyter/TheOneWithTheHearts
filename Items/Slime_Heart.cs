@@ -33,13 +33,8 @@ namespace TheOneWithTheHearts.Items
 			regen *= 1.5f;
         }
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
-            if(mod.TextureExists("Items/"+this.GetType().Name)&&false){
-				spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), item.position-Main.screenPosition, null, Color.White, rotation, new Vector2(22,22), scale/2.5f, SpriteEffects.None, 0);
-			}else{
-                scale*=item.scale;
-				return true;
-			}
-            return false;
+            scale*=item.scale;
+            return true;
         }
 	}
 }

@@ -21,33 +21,47 @@ namespace TheOneWithTheHearts {
         public float partialRegen = 0;
         public bool frozenImmune = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
-            int rDamage = damage;
-            int cHealth = player.statLife;
-            int tDamage = 0;
+            //int defenseReduction = (int)Math.Min(player.statDefense * (Main.expertMode ? 0.75f : 0.5f), damage - 1);
+            float reducedDamage = (float)Main.CalculatePlayerDamage(damage, player.statDefense);
+			float beetleDR = 0.15f * player.beetleOrbs;
+            float totalDM = (1f - player.endurance) * (1f - beetleDR) * (player.solarShields > 0 ? 0.7f : 1f);
+            float rDamage = Math.Max(reducedDamage * totalDM, 1);//(damage - defenseReduction)
+            float cHealth = player.statLife;
+            float tDamage = 0;
             (int heart, int life) current;
             HeartItemBase currentHeart;
+            int startIndex = -1;
             while (rDamage>0) {
-                current = GetCurrentHeartWithHealth(cHealth);
+                current = GetCurrentHeartWithHealth((int)cHealth);
                 if (current.heart == -1) {
                     break;
                 }
+                if (startIndex == -1) {
+                    startIndex = current.heart;
+                }
                 currentHeart = hearts[current.heart].modItem as HeartItemBase;
-                currentHeart.Damage(player, ref rDamage, crit, damageSource);
+                if (currentHeart is null) {
+                    break;
+                }
+                currentHeart.Damage(player, ref rDamage, current.heart, startIndex, crit, damageSource);
                 if (rDamage > current.life) {
                     tDamage += current.life;
                     cHealth -= current.life;
                     rDamage -= current.life;
-                } else {
+                } else if(rDamage > 0){
                     tDamage += rDamage;
                     cHealth -= rDamage;
                     rDamage -= rDamage;
+                } else {
+                    rDamage = 0;
                 }
                 if (current.life <= 0) {
                     tDamage += rDamage;
                     break;
                 }
             }
-            damage = tDamage;
+            damage = (int)Math.Ceiling(tDamage / (totalDM > 0 ? totalDM : 1));// + defenseReduction;
+            customDamage = true;
             return damage > 0;
         }
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue) {

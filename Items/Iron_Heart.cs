@@ -23,7 +23,7 @@ namespace TheOneWithTheHearts.Items
 			item.height = 22;
             item.width = 22;
 		}
-        public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = null) {
+        public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = null) {
 			damage -= 5;
         }
         public override void UpdateNaturalRegen(Player player, ref float regen) {

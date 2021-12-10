@@ -8,19 +8,15 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace TheOneWithTheHearts.Items
-{
-	public class ETG_Heart_2 : HeartItemBase
-	{
+namespace TheOneWithTheHearts.Items {
+	public class ETG_Heart_2 : HeartItemBase {
 		public override int MaxLife => 4;
         public override bool GetsLifeBoosts => false;
-		public override void SetStaticDefaults()
-		{
+		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Four-chambered Heart");
 			Tooltip.SetDefault("4 HP\nWhen active:\nReduces damage taken to 1\nReduces natural life regeneration by 100%\n'. → ⁛'");
 		}
-		public override void SetDefaults()
-		{
+		public override void SetDefaults() {
 			item.CloneDefaults(ItemID.LifeCrystal);
 			item.consumable = false;
 			item.useStyle = 0;
@@ -34,8 +30,7 @@ namespace TheOneWithTheHearts.Items
         public override float ModifyLifeRegen(Player player, float regen) {
 			return regen / 20f;
         }
-		public override void AddRecipes()
-		{
+		public override void AddRecipes() {
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ModContent.ItemType<ETG_Heart>(), 1);
 			//recipe.AddIngredient(ModContent.ItemType<Mech_Heart>(), 1);
@@ -45,24 +40,30 @@ namespace TheOneWithTheHearts.Items
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
-		public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default){
-			int defenseReduction = (int)Math.Min(player.statDefense * (Main.expertMode ? 0.75f : 0.5f), damage - 1);
-			damage = (int)(((crit?2:1) * (damage>=60?3:1)) + defenseReduction);//Math.Ceiling((damage-defenseReduction)/60f)
+		public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default) {
+			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
+			for (int i = heartIndex+1; i <= startIndex; i++) {
+				ModItem heart = heartPlayer.hearts[i].modItem;
+                if (heart is ETG_Heart || heart is ETG_Heart_2) {
+					return;
+                }
+            }
+			damage = (((crit?2:1) * (damage>=35?3:1)));//Math.Ceiling((damage-defenseReduction)/60f)
 		}
         public override void Heal(ref int healing) {
             if (healing >= 80) {
 				healing -= 76;
-            }else if (healing >= 70) {
+            } else if (healing >= 70) {
 				healing = 4;
-            }else if (healing >= 50) {
+            } else if (healing >= 50) {
 				healing = 3;
-            }else if (healing >= 30) {
+            } else if (healing >= 30) {
 				healing = 2;
-            }else if (healing >= 10) {
+            } else if (healing >= 10) {
 				healing = 1;
             }
         }
-        public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
+        public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale) {
 			string name = golden ? "Golden/ETG_Heart_2": "ETG_Heart_2";
 			switch (life) {
 				case 4:

@@ -43,9 +43,15 @@ namespace TheOneWithTheHearts.Items
         public override float ModifyLifeRegen(Player player, float regen) {
 			return regen / 20f;
         }
-        public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default){
-			int defenseReduction = (int)Math.Min(player.statDefense * (Main.expertMode ? 0.75f : 0.5f), damage - 1);
-			damage = (int)(((crit?2:1) * (damage>=60?2:1)) + defenseReduction);//Math.Ceiling((damage-defenseReduction)/60f)
+        public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default){
+			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
+			for (int i = heartIndex+1; i <= startIndex; i++) {
+				ModItem heart = heartPlayer.hearts[i].modItem;
+                if (heart is ETG_Heart || heart is ETG_Heart_2) {
+					return;
+                }
+            }
+			damage = (((crit?2:1) * (damage>=35?2:1)));//Math.Ceiling((damage-defenseReduction)/60f)
 		}
         public override void Heal(ref int healing) {
             if (healing >= 40) {

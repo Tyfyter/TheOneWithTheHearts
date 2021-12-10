@@ -45,7 +45,7 @@ namespace TheOneWithTheHearts.Items
             }
             return (regen>0)^player.HasAnyBuff(new HashSet<int> {BuffID.OnFire, BuffID.CursedInferno, BuffID.Burning})? regen * 2 : regen * 0.5f;
         }
-        public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = null) {
+        public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = null) {
 			Main.PlaySound(SoundID.Item27, player.Center);
         }
     }
@@ -53,17 +53,20 @@ namespace TheOneWithTheHearts.Items
         public override string Texture => "TheOneWithTheHearts/Items/Ice_Heart";
 		public override void SetStaticDefaults() {
 			base.SetStaticDefaults();
-			Tooltip.SetDefault(Tooltip.GetDefault()+"\nPermanently increases maximum life by 20 when used");
+			Tooltip.SetDefault("Permanently increases maximum life by 20 when used\n"+Tooltip.GetDefault());
 		}
 		public override void SetDefaults() {
 			item.CloneDefaults(ItemID.LifeCrystal);
 			item.height = 22;
 			item.width = 22;
 		}
-        public override bool CanUseItem(Player player) {
+        public override bool ConsumeItem(Player player) {
             return player.statLifeMax < 400;
         }
         public override bool UseItem(Player player) {
+			if (player.statLifeMax >= 400) {
+				return true;
+			}
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
 			heartPlayer.hearts[heartPlayer.MaxHearts].SetDefaults(ModContent.ItemType<Ice_Heart>());
 			player.statLifeMax += 20;
@@ -75,5 +78,13 @@ namespace TheOneWithTheHearts.Items
 			AchievementsHelper.HandleSpecialEvent(player, 0);
             return true;
         }
+		public override void AddRecipes() {
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LifeCrystal, 1);
+			recipe.AddIngredient(ItemID.FrostCore, 1);
+			recipe.AddTile(TileID.IceMachine);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
     }
 }

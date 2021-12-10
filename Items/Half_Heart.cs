@@ -39,7 +39,7 @@ namespace TheOneWithTheHearts.Items
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
-		public override void Damage(Player player, ref int damage, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
+		public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
 			damage -= Math.Min(damage, 20)/2;
 		}
 	}
