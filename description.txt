@@ -1,5 +1,5 @@
 Heart of Magic is an overhaul to hearts because I thought of a pun.
-Hold your favorite key to interact with your hearts
+You can interact with your hearts like they're accessories, and view their tooltips without your inventory open by holding favorite.
 
 Changelog:
 0.5.1.1:
