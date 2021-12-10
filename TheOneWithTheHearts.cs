@@ -16,6 +16,7 @@ namespace TheOneWithTheHearts {
 		public UserInterface heartUI;
 		public HeartUI ui;
 		bool disableCombatText = false;
+		public Texture2D pipTexture;
 		public override void Load() {
             mod = this;
 			if (!Main.dedServ) {
@@ -26,7 +27,11 @@ namespace TheOneWithTheHearts {
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
             On.Terraria.CombatText.NewText_Rectangle_Color_int_bool_bool += CombatText_NewText;
 			disableCombatText = false;
+			pipTexture = GetTexture("UI/Pip");
 		}
+        public override void Unload() {
+			pipTexture = null;
+        }
 
         private void Player_UpdateLifeRegen(On.Terraria.Player.orig_UpdateLifeRegen orig, Player self) {
 			int life = self.statLife;
@@ -130,27 +135,35 @@ namespace TheOneWithTheHearts {
 				}
 				int alpha = (int)(rgbValue * 0.9);
 				Vector2 position = new Vector2(500 + 26 * i + xOffset + UI_ScreenAnchorX + 11, 32f + (22 - 22 * heartScale) / 2f + (float)yOffset + 11);
-				if(currentMaxLife>0)currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-->0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
-				
-                if (!PlayerInput.IgnoreMouseInterface && Main.keyState.IsKeyDown(Main.FavoriteKey)) {
+
+				bool favHeld = Main.keyState.IsKeyDown(Main.FavoriteKey);
+				if (currentMaxLife > 0) {
+					currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-- > 0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
+                } else if(favHeld){
+					Main.spriteBatch.Draw(pipTexture, position, null, Color.White, 0, new Vector2(4), 0.75f, SpriteEffects.None, 0);
+                }
+
+                if (!PlayerInput.IgnoreMouseInterface) {
 					Vector2 topLeft = position - new Vector2(11);
 					Vector2 bottomRight = position + new Vector2(11);
                     if (Main.MouseScreen.X>topLeft.X && Main.MouseScreen.Y>topLeft.Y && Main.MouseScreen.X<bottomRight.X && Main.MouseScreen.Y<bottomRight.Y) {
-						Keys oldFav = Main.FavoriteKey;
-                        Main.FavoriteKey = Keys.None;
-                        try {
-                            if (heartPlayer.hearts[i] is null) {
-								heartPlayer.hearts[i] = new Item();
-                            }
-                            if (Main.playerInventory) {
-								Main.LocalPlayer.mouseInterface = true;
-								ItemSlot.Handle(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
-                            } else {
-								ItemSlot.MouseHover(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
-                            }
-                        } finally {
-							Main.FavoriteKey = oldFav;
+                        if (heartPlayer.hearts[i] is null) {
+							heartPlayer.hearts[i] = new Item();
                         }
+						if(currentMaxLife > 0)currentHeart.renderingInHealthbar = true;
+                        if (Main.playerInventory) {
+							Main.LocalPlayer.mouseInterface = true;
+							ItemSlot.Handle(ref heartPlayer.hearts[i], (ItemSlot.ShiftInUse && currentMaxLife > 0)?ItemSlot.Context.EquipAccessory:ItemSlot.Context.TrashItem);
+                        } else if(favHeld){
+							Keys oldFav = Main.FavoriteKey;
+							Main.FavoriteKey = Keys.None;
+							try {
+								ItemSlot.MouseHover(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+							} finally {
+								Main.FavoriteKey = oldFav;
+							}
+                        }
+						if(currentMaxLife > 0)currentHeart.renderingInHealthbar = false;
                     }
                 }
 			}

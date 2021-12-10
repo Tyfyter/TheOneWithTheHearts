@@ -58,14 +58,25 @@ namespace TheOneWithTheHearts.Items {
 			}
             return false;
         }
+        internal bool renderingInHealthbar = false;
 		public override bool CanRightClick(){
-			if(Main.mouseItem?.IsAir??true){
-				Item i = item.Clone();
-				i.stack = 1;
-				Main.mouseItem = i;
-				Main.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
-				return true;
-			}
+            if (renderingInHealthbar) return false;
+            HeartPlayer heartPlayer = Main.LocalPlayer.GetModPlayer<HeartPlayer>();
+            int i = -1;
+            for (i = 0; i < heartPlayer.MaxHearts; i++) {
+                if (heartPlayer.hearts[i]?.IsAir??true) {
+                    goto foundEmptySlot;
+                }
+            }
+            i = -1;
+            foundEmptySlot:
+            if (i != -1) {
+                Item clone = item.Clone();
+                clone.stack = 1;
+                heartPlayer.hearts[i] = clone;
+                Main.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
+                return true;
+            }
 			return false;
 		}
     }

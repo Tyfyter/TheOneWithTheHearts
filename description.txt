@@ -2,6 +2,9 @@ Heart of Magic is an overhaul to hearts because I thought of a pun.
 Hold your favorite key to interact with your hearts
 
 Changelog:
+0.5.1.1:
+UI improvements
+
 0.5.1:
 added "Heart of Ice"
 bugfixes and improvements
