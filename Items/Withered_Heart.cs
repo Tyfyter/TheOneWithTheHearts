@@ -149,7 +149,7 @@ namespace TheOneWithTheHearts.Items
 		public override void WhileInactive(Player player){
 			player.GetModPlayer<HeartPlayer>().witheredHearts+=1;
 		}
-        public override void UpdateNaturalRegen(Player player, ref float regen) {
+        public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
 			regen *= 1.5f;
         }
 	}

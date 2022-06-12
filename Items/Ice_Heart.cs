@@ -36,7 +36,7 @@ namespace TheOneWithTheHearts.Items
 			}
 			player.GetModPlayer<HeartPlayer>().frozenImmune = true;
         }
-        public override float ModifyLifeRegen(Player player, float regen) {
+        public override float ModifyLifeRegen(Player player, float regen, bool golden) {
             if (player.HasBuff(BuffID.Frostburn)) {
 				return MathHelper.Max(regen * 2, 0) + 0.15f;
             }

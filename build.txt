@@ -1,6 +1,6 @@
 author = Tyfyter (Tyfyter2002 on steam)
 
-version = 0.5.1.1
+version = 0.5.1.2
 
 displayName = Heart of Magic
 homepage = https://tyfyter.github.io/

@@ -25,10 +25,10 @@ namespace TheOneWithTheHearts.Items
 			item.height = 22;
             item.width = 22;
 		}
-        public override void UpdateNaturalRegen(Player player, ref float regen) {
+        public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
 			regen = 0;
         }
-        public override float ModifyLifeRegen(Player player, float regen) {
+        public override float ModifyLifeRegen(Player player, float regen, bool golden) {
 			return regen * 0.75f;
         }
         /*

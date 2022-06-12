@@ -11,15 +11,15 @@ namespace TheOneWithTheHearts.NPCs {
         bool init = true;
         public override void SetDefaults(NPC npc) {
             if (npc.aiStyle == 1 && npc.ai[1] == 58) {
-                Main.NewText("SetDefaults works for slimey heart");
-                if(Main.rand.Next(10) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+                //Main.NewText("SetDefaults works for slimey heart");
+                if(Main.rand.Next(3) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
             }
         }
         public override void AI(NPC npc){
             if (init){
                 if (npc.aiStyle == 1 && npc.ai[1] == 58) {
-                    Main.NewText("slimey heart check");
-                    if(Main.rand.Next(10) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
+                    //Main.NewText("slimey heart check");
+                    if(Main.rand.Next(3) == 0)npc.ai[1] = ModContent.ItemType<Slime_Heart>();
                 }
                 init = false;
             }

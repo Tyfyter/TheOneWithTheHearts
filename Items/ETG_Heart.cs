@@ -37,11 +37,11 @@ namespace TheOneWithTheHearts.Items
 			recipe.anyIronBar = true;
 			recipe.AddRecipe();
 		}
-        public override void UpdateNaturalRegen(Player player, ref float regen) {
-			regen = 0;
+        public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
+			regen *= golden ? 0.5f : 0;
         }
-        public override float ModifyLifeRegen(Player player, float regen) {
-			return regen / 20f;
+        public override float ModifyLifeRegen(Player player, float regen, bool golden) {
+			return regen / (golden ? (regen > 0 ? 15f : 25f) : 20f);
         }
         public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default){
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
@@ -53,7 +53,7 @@ namespace TheOneWithTheHearts.Items
             }
 			damage = (((crit?2:1) * (damage>=35?2:1)));//Math.Ceiling((damage-defenseReduction)/60f)
 		}
-        public override void Heal(ref int healing) {
+        public override void Heal(ref int healing, bool golden) {
             if (healing >= 40) {
 				healing -= 38;
             }else if (healing >= 30) {

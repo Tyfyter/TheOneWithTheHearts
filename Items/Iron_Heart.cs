@@ -26,7 +26,7 @@ namespace TheOneWithTheHearts.Items
         public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = null) {
 			damage -= 5;
         }
-        public override void UpdateNaturalRegen(Player player, ref float regen) {
+        public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
 			regen *= 0.85f;
         }
         /*

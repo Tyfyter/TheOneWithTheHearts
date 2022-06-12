@@ -22,20 +22,22 @@ namespace TheOneWithTheHearts.Items {
         }
         public override void AutoStaticDefaults() {
             base.AutoStaticDefaults();
-            if (ModContent.TextureExists(GoldenTexture)) {
+            if (!Main.dedServ && ModContent.TextureExists(GoldenTexture)) {
                 Main.itemTexture[item.type].Tag = ModContent.GetTexture(GoldenTexture);
             }
         }
         public virtual void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default){}
-        public virtual void Heal(ref int healing){}
-        public virtual void UpdateNaturalRegen(Player player, ref float regen){}
-        /// <summary>
-        /// allows a heart to modify health regeneration from buffs and accessories, returns the regen parameter by default
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="regen"></param>
-        /// <returns>the amount of life the player will regenerate</returns>
-        public virtual float ModifyLifeRegen(Player player, float regen){
+        public virtual void Heal(ref int healing, bool golden) { }
+        public virtual void UpdateNaturalRegen(Player player, ref float regen, bool golden) { }
+		/// <summary>
+		/// allows a heart to modify health regeneration from buffs and accessories, returns the regen parameter by default
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="regen"></param>
+		/// <returns>the amount of life the player will regenerate</returns>
+		/// <param name="golden"></param>
+        
+		public virtual float ModifyLifeRegen(Player player, float regen, bool golden) {
             return regen;
         }
         public virtual void WhileInactive(Player player){}

@@ -76,11 +76,11 @@ namespace TheOneWithTheHearts {
                     break;
                 }
                 currentHeart = hearts[current.heart].modItem as HeartItemBase;
-                currentHeart.Heal(ref rHealing);
+                currentHeart.Heal(ref rHealing, current.heart < GoldenHearts);
                 float multipliers = 1f;
                 if (currentHeart.GetsLifeBoosts) {
                     multipliers *= HealthMultiplier;
-                    if (current.heart<GoldenHearts) {
+                    if (current.heart < GoldenHearts) {
                         multipliers *= 1.25f;
                     }
                 }
@@ -105,14 +105,15 @@ namespace TheOneWithTheHearts {
             healValue = tHealing;
         }
         public override void NaturalLifeRegen(ref float regen) {
-            (hearts[GetCurrentHeart(player.statLife+1)]?.modItem as HeartItemBase)?.UpdateNaturalRegen(player, ref regen);
+            int index = GetCurrentHeart(player.statLife + 1);
+            (hearts[index]?.modItem as HeartItemBase)?.UpdateNaturalRegen(player, ref regen, index < GoldenHearts);
         }
         public int MultiplyLifeRegen(int regen) {
             int index = GetCurrentHeart(player.statLife);
             if (index < 0) {
                 return regen;
             }
-            partialRegen += ((HeartItemBase)hearts[index].modItem).ModifyLifeRegen(player, regen);
+            partialRegen += ((HeartItemBase)hearts[index].modItem).ModifyLifeRegen(player, regen, index < GoldenHearts);
             int actualRegen = (int)(partialRegen - (partialRegen % 1));
             partialRegen -= actualRegen;
             return actualRegen;
@@ -126,7 +127,7 @@ namespace TheOneWithTheHearts {
                     float multipliers = 1f;
                     if (heart.GetsLifeBoosts) {
                         multipliers *= HealthMultiplier;
-                        if (i<GoldenHearts) {
+                        if (i < GoldenHearts) {
                             multipliers *= 1.25f;
                         }
                     }

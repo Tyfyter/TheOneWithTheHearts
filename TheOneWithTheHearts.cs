@@ -13,21 +13,21 @@ using TheOneWithTheHearts.UI;
 namespace TheOneWithTheHearts {
 	public class TheOneWithTheHearts : Mod {
         public static TheOneWithTheHearts mod;
-		public UserInterface heartUI;
-		public HeartUI ui;
+		//public UserInterface heartUI;
+		//public HeartUI ui;
 		bool disableCombatText = false;
 		public Texture2D pipTexture;
 		public override void Load() {
             mod = this;
 			if (!Main.dedServ) {
-				heartUI = new UserInterface();
+				//heartUI = new UserInterface();
+				pipTexture = GetTexture("UI/Pip");
 			}
             On.Terraria.Main.DrawInterface_Resources_Life += Main_DrawInterface_Resources_Life;
             On.Terraria.Player.DropItems += Player_DropItems;
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
             On.Terraria.CombatText.NewText_Rectangle_Color_int_bool_bool += CombatText_NewText;
 			disableCombatText = false;
-			pipTexture = GetTexture("UI/Pip");
 		}
         public override void Unload() {
 			pipTexture = null;
@@ -153,7 +153,7 @@ namespace TheOneWithTheHearts {
 						if(currentMaxLife > 0)currentHeart.renderingInHealthbar = true;
                         if (Main.playerInventory) {
 							Main.LocalPlayer.mouseInterface = true;
-							ItemSlot.Handle(ref heartPlayer.hearts[i], (ItemSlot.ShiftInUse && currentMaxLife > 0)?ItemSlot.Context.EquipAccessory:ItemSlot.Context.TrashItem);
+							ItemSlot.Handle(ref heartPlayer.hearts[i], (ItemSlot.ShiftInUse && currentMaxLife > 0)?ItemSlot.Context.EquipAccessory:ItemSlot.Context.BankItem);
                         } else if(favHeld){
 							Keys oldFav = Main.FavoriteKey;
 							Main.FavoriteKey = Keys.None;
