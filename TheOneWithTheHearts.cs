@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,7 +13,6 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.Utilities;
 using TheOneWithTheHearts.Items;
-using TheOneWithTheHearts.UI;
 
 namespace TheOneWithTheHearts {
 	public class TheOneWithTheHearts : Mod {
@@ -71,6 +71,10 @@ namespace TheOneWithTheHearts {
 				orig();
             }*/
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
+			if (heartPlayer is null) {
+				orig(self);
+				return;
+			}
 			float UI_ScreenAnchorX = Main.screenWidth - 800;
 			//float halfHeartWidth = 11;
 			if (player.ghost) {
@@ -87,6 +91,14 @@ namespace TheOneWithTheHearts {
 			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, Lang.inter[0].Value, new Vector2((float)(500 + 13 * rowWidth) - vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
 			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.statLife + "/" + player.statLifeMax2, new Vector2((float)(500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, new Vector2(FontAssets.MouseText.Value.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
 			int rHealth = player.statLife;
+			bool canRemoveHearts = false;
+			byte equippedHeartCount = 0;
+			for (int i = 0; i < heartPlayer.MaxHearts; i++) {
+				if ((heartPlayer.hearts[i]?.IsAir == false) && (++equippedHeartCount > 1)) {
+					canRemoveHearts = true;
+					break;
+				}
+			}
 			for (int i = 0; i < heartPlayer.MaxHearts; i++) {
 				HeartItemBase currentHeart = heartPlayer.hearts[i]?.ModItem as HeartItemBase;
 				int currentMaxLife = currentHeart?.MaxLife ?? 0;
@@ -157,7 +169,11 @@ namespace TheOneWithTheHearts {
 						if(currentMaxLife > 0)currentHeart.renderingInHealthbar = true;
                         if (Main.playerInventory) {
 							Main.LocalPlayer.mouseInterface = true;
-							ItemSlot.Handle(ref heartPlayer.hearts[i], (ItemSlot.ShiftInUse && currentMaxLife > 0)?ItemSlot.Context.EquipAccessory:ItemSlot.Context.BankItem);
+							if (canRemoveHearts || !(ItemSlot.ShiftInUse || Main.mouseItem.IsAir)) {
+								ItemSlot.Handle(ref heartPlayer.hearts[i], (ItemSlot.ShiftInUse && currentMaxLife > 0) ? ItemSlot.Context.EquipAccessory : ItemSlot.Context.BankItem);
+							} else {
+								ItemSlot.MouseHover(ref heartPlayer.hearts[i], ItemSlot.Context.InventoryItem);
+							}
                         } else if(favHeld){
 							Keys oldFav = Main.FavoriteKey;
 							Main.FavoriteKey = Keys.None;

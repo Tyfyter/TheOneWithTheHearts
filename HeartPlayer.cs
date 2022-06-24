@@ -7,7 +7,6 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using TheOneWithTheHearts.Items;
-using TheOneWithTheHearts.UI;
 
 namespace TheOneWithTheHearts {
     public class HeartPlayer : ModPlayer {
@@ -238,7 +237,8 @@ namespace TheOneWithTheHearts {
                     airCount++;
                 } else if (hearts[i]?.ModItem is null) {
                     hearts[i] = new Item(ModContent.ItemType<Default_Heart>());
-				}
+                    Mod.Logger.Info("added heart #" + (i + 1) + " on load");
+                }
             }
 			if (airCount >= 20) {
                 hearts = new Item[20];
@@ -247,8 +247,8 @@ namespace TheOneWithTheHearts {
         }
 		public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
             for (int i = 0; i < 20; i++) {
-                hearts[i] = new Item();
-                hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
+                hearts[i] = new Item(ModContent.ItemType<Default_Heart>());
+                Mod.Logger.Info("added heart #" + (i + 1) + " on AddStartingItems");
             }
             return Array.Empty<Item>();
         }

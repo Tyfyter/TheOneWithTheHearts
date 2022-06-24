@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+/*using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -40,7 +40,7 @@ namespace TheOneWithTheHearts.UI
 					ItemSlot.Handle(ref Item, _context);
 					try {
 						((HeartUI)Parent).UpdatePlayer();	
-					}catch (System.Exception){}
+					}catch (Exception){}
 				}
 			}
 			// Draw draws the slot itself and Item. Depending on context, the color will change, as will drawing other things like stack counts.
@@ -48,4 +48,4 @@ namespace TheOneWithTheHearts.UI
 			Main.inventoryScale = oldScale;
 		}
 	}
-}
+}*/
