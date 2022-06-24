@@ -18,12 +18,12 @@ namespace TheOneWithTheHearts.Items
 		}
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-            item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+            Item.width = 22;
 		}
         public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
 			regen = 0;
@@ -37,26 +37,22 @@ namespace TheOneWithTheHearts.Items
 		}//*/
         public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
 			string name = golden ? "Items/Golden/Open_Heart" : "Items/Open_Heart";
-			spriteBatch.Draw(mod.GetTexture(name), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(mod.GetTexture(name+"_Inner"), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(Mod.RequestTexture(name), position, null, new Color(drawColor.R,drawColor.G,drawColor.B), 0, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(Mod.RequestTexture(name+"_Inner"), position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
         }
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.ShadowScale, 5);
-			recipe.AddIngredient(ItemID.IronBar, 3);
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 3);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
+			recipe.Register();
 
-			recipe = new ModRecipe(mod);
+			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.TissueSample, 5);
-			recipe.AddIngredient(ItemID.IronBar, 3);
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 3);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 	}
 }

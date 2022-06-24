@@ -1,12 +1,16 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ReLogic.Content;
 using ReLogic.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Terraria.Utilities;
 using TheOneWithTheHearts.Items;
 using TheOneWithTheHearts.UI;
 
@@ -16,14 +20,14 @@ namespace TheOneWithTheHearts {
 		//public UserInterface heartUI;
 		//public HeartUI ui;
 		bool disableCombatText = false;
-		public Texture2D pipTexture;
+		public AutoCastingAsset<Texture2D> pipTexture;
 		public override void Load() {
             mod = this;
 			if (!Main.dedServ) {
 				//heartUI = new UserInterface();
-				pipTexture = GetTexture("UI/Pip");
+				pipTexture = Assets.Request<Texture2D>("UI/Pip");
 			}
-            On.Terraria.Main.DrawInterface_Resources_Life += Main_DrawInterface_Resources_Life;
+            On.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += Main_DrawInterface_Resources_Life;
             On.Terraria.Player.DropItems += Player_DropItems;
             On.Terraria.Player.UpdateLifeRegen += Player_UpdateLifeRegen;
             On.Terraria.CombatText.NewText_Rectangle_Color_int_bool_bool += CombatText_NewText;
@@ -55,13 +59,13 @@ namespace TheOneWithTheHearts {
 			Item[] hearts = self.GetModPlayer<HeartPlayer>().hearts;
             for (int i = 0; i < 20; i++) {
                 if (hearts[i].type != ModContent.ItemType<Default_Heart>()) {
-					self.QuickSpawnClonedItem(hearts[i]);
+					self.QuickSpawnClonedItem(self.GetSource_DropAsItem(), hearts[i]);
                 }
             }
 			orig(self);
         }
 
-        private void Main_DrawInterface_Resources_Life(On.Terraria.Main.orig_DrawInterface_Resources_Life orig) {
+        private void Main_DrawInterface_Resources_Life(On.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.orig_DrawLife orig, Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet self) {
 			Player player = Main.LocalPlayer;
             /*if (player.controlSmart) {
 				orig();
@@ -79,12 +83,12 @@ namespace TheOneWithTheHearts {
 				goldenHearts = 0;
 			}
 			int rowWidth = hearts >= 10 ? 10 : hearts;
-			Vector2 vector = Main.fontMouseText.MeasureString(Lang.inter[0].Value + " " + player.statLifeMax2 + "/" + player.statLifeMax2);
-			Main.spriteBatch.DrawString(Main.fontMouseText, Lang.inter[0].Value, new Vector2((float)(500 + 13 * rowWidth) - vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.mouseTextColorReal, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
-			Main.spriteBatch.DrawString(Main.fontMouseText, player.statLife + "/" + player.statLifeMax2, new Vector2((float)(500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.mouseTextColorReal, 0f, new Vector2(Main.fontMouseText.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
+			Vector2 vector = FontAssets.MouseText.Value.MeasureString(Lang.inter[0].Value + " " + player.statLifeMax2 + "/" + player.statLifeMax2);
+			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, Lang.inter[0].Value, new Vector2((float)(500 + 13 * rowWidth) - vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.statLife + "/" + player.statLifeMax2, new Vector2((float)(500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, new Vector2(FontAssets.MouseText.Value.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
 			int rHealth = player.statLife;
 			for (int i = 0; i < heartPlayer.MaxHearts; i++) {
-				HeartItemBase currentHeart = heartPlayer.hearts[i]?.modItem as HeartItemBase;
+				HeartItemBase currentHeart = heartPlayer.hearts[i]?.ModItem as HeartItemBase;
 				int currentMaxLife = currentHeart?.MaxLife ?? 0;
                 if (currentHeart is null || heartPlayer.hearts[i].IsAir) {
 					currentMaxLife = 0;
@@ -168,8 +172,7 @@ namespace TheOneWithTheHearts {
                 }
 			}
         }
-
-        /*public TheOneWithTheHearts() {
+		/*public TheOneWithTheHearts() {
 
 		}
 		public override void UpdateUI(GameTime gameTime) {
@@ -189,5 +192,28 @@ namespace TheOneWithTheHearts {
 				);
 			}
 		}*/
+	}
+	public struct AutoCastingAsset<T> where T : class {
+		public bool HasValue => asset is not null;
+		public bool IsLoaded => asset?.IsLoaded ?? false;
+		public T Value => asset.Value;
+
+		readonly Asset<T> asset;
+		AutoCastingAsset(Asset<T> asset) {
+			this.asset = asset;
+		}
+		public static implicit operator AutoCastingAsset<T>(Asset<T> asset) => new(asset);
+		public static implicit operator T(AutoCastingAsset<T> asset) => asset.Value;
+	}
+	public static class HeartExtensions {
+		public static AutoCastingAsset<Texture2D> RequestTexture(this Mod mod, string name) => mod.Assets.Request<Texture2D>(name);
+		public static int RandomRound(this UnifiedRandom random, float value) {
+			float amount = value % 1;
+			value -= amount;
+			if (random.NextFloat() < amount) {
+				value++;
+			}
+			return (int)value;
+		}
 	}
 }

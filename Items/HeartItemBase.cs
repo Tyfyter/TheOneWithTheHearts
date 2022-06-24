@@ -3,27 +3,23 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TheOneWithTheHearts.Items {
-    public class HeartItemBase : ModItem {
+    public abstract class HeartItemBase : ModItem {
         public virtual int MaxLife => 20;
         public virtual bool GetsLifeBoosts => true;
         public virtual string GoldenTexture => Texture.Replace("Items", "Items/Golden");
         public int index = -2;
-        public override bool CloneNewInstances{
-			get { return true; }
-		}
-        public override bool Autoload(ref string name){
-            if(name == "HeartItemBase")return false;
-            return true;
-        }
+        protected override bool CloneNewInstances => true;
         public override void AutoStaticDefaults() {
             base.AutoStaticDefaults();
-            if (!Main.dedServ && ModContent.TextureExists(GoldenTexture)) {
-                Main.itemTexture[item.type].Tag = ModContent.GetTexture(GoldenTexture);
+            if (!Main.dedServ && ModContent.HasAsset(GoldenTexture)) {
+                TextureAssets.Item[Item.type].Value.Tag = (AutoCastingAsset<Texture2D>)ModContent.Request<Texture2D>(GoldenTexture);
             }
         }
         public virtual void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default){}
@@ -43,21 +39,16 @@ namespace TheOneWithTheHearts.Items {
         public virtual void WhileInactive(Player player){}
         public virtual void WhileActive(Player player){}
         public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
-            if (golden && Main.itemTexture[item.type].Tag is Texture2D goldenTexture) {
+            if (golden && TextureAssets.Item[Item.type].Value.Tag is Texture2D goldenTexture) {
                 spriteBatch.Draw(goldenTexture, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             } else {
-                spriteBatch.Draw(Main.itemTexture[item.type], position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(TextureAssets.Item[Item.type].Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             }
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
-            Rectangle rect = new Rectangle((int)item.position.X,(int)item.position.Y,item.width,item.height);
-            if(mod.TextureExists("Items/"+this.GetType().Name)&&false){
-                spriteBatch.Draw(mod.GetTexture("Items/"+this.GetType().Name), item.Center, rect, lightColor, 0, new Vector2(22,22), scale, SpriteEffects.None, 0);
-            }else{
-                scale*=item.scale;
-				return true;
-			}
+            Rectangle rect = new Rectangle((int)Item.position.X,(int)Item.position.Y,Item.width,Item.height);
+            spriteBatch.Draw(TextureAssets.Item[Item.type].Value, Item.Center, rect, lightColor, 0, new Vector2(22,22), scale, SpriteEffects.None, 0);
             return false;
         }
         internal bool renderingInHealthbar = false;
@@ -73,10 +64,10 @@ namespace TheOneWithTheHearts.Items {
             i = -1;
             foundEmptySlot:
             if (i != -1) {
-                Item clone = item.Clone();
+                Item clone = Item.Clone();
                 clone.stack = 1;
                 heartPlayer.hearts[i] = clone;
-                Main.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
+                SoundEngine.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
                 return true;
             }
 			return false;

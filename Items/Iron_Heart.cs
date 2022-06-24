@@ -9,19 +9,18 @@ namespace TheOneWithTheHearts.Items
 	public class Iron_Heart : HeartItemBase
 	{
         public override int MaxLife => 15;
-		public override void SetStaticDefaults()
-		{
+		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Iron Heart");
 			Tooltip.SetDefault("15 HP\nWhen active:\nReduces damage taken by 5\nReduces natural life regeneration by 15%\n'This is not a modded sword.'");
 		}
-		public override void SetDefaults()
-		{
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-            item.width = 22;
+		public override void SetDefaults() {
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+			Item.height = 22;
+            Item.width = 22;
 		}
         public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = null) {
 			damage -= 5;
@@ -35,13 +34,11 @@ namespace TheOneWithTheHearts.Items
 		}//*/
         public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 2);
-			recipe.AddIngredient(ItemID.IronBar, 6);
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 6);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 	}
 }

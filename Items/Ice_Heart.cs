@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Achievements;
 using Terraria.ID;
@@ -17,12 +18,12 @@ namespace TheOneWithTheHearts.Items
 			Tooltip.SetDefault("20 HP\nWhen active:\nCold debuffs will strengthen you instead");
 		}
 		public override void SetDefaults() {
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-			item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+			Item.width = 22;
 		}
         public override void WhileActive(Player player) {
 			player.resistCold = true;
@@ -46,7 +47,7 @@ namespace TheOneWithTheHearts.Items
             return (regen>0)^player.HasAnyBuff(new HashSet<int> {BuffID.OnFire, BuffID.CursedInferno, BuffID.Burning})? regen * 2 : regen * 0.5f;
         }
         public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = null) {
-			Main.PlaySound(SoundID.Item27, player.Center);
+			SoundEngine.PlaySound(SoundID.Item27, player.Center);
         }
     }
 	public class Ice_Heart_Useable : Ice_Heart {
@@ -56,14 +57,14 @@ namespace TheOneWithTheHearts.Items
 			Tooltip.SetDefault("Permanently increases maximum life by 20 when used\n"+Tooltip.GetDefault());
 		}
 		public override void SetDefaults() {
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.height = 22;
-			item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.height = 22;
+			Item.width = 22;
 		}
         public override bool ConsumeItem(Player player) {
             return player.statLifeMax < 400;
         }
-        public override bool UseItem(Player player) {
+        public override bool? UseItem(Player player)/* Suggestion: Return null instead of false */ {
 			if (player.statLifeMax >= 400) {
 				return true;
 			}
@@ -79,12 +80,11 @@ namespace TheOneWithTheHearts.Items
             return true;
         }
 		public override void AddRecipes() {
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
 			recipe.AddIngredient(ItemID.FrostCore, 1);
 			recipe.AddTile(TileID.IceMachine);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
     }
 }

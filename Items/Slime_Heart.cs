@@ -17,13 +17,13 @@ namespace TheOneWithTheHearts.Items
 		}
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.scale = 1/2.5f;
-			item.height = 22;
-			item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.scale = 1/2.5f;
+			Item.height = 22;
+			Item.width = 22;
 		}
 		public override void WhileActive(Player player){
 			player.extraFall = 10;
@@ -33,7 +33,7 @@ namespace TheOneWithTheHearts.Items
 			regen *= 1.5f;
         }
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI){
-            scale*=item.scale;
+            scale*=Item.scale;
             return true;
         }
 	}

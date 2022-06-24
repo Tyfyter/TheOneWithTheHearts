@@ -5,19 +5,20 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.World.Generation;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader.IO;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.WorldBuilding;
 using TheOneWithTheHearts.Items;
 using static Tyfyter.Utils.StructureUtils;
+using Terraria.IO;
 
 namespace TheOneWithTheHearts {
-	public class HeartWorld : ModWorld {
+	public class HeartWorld : ModSystem {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight) {
-			tasks.Insert(tasks.Count - 1, new PassLegacy("Heart Shrine", (GenerationProgress progress) => {
+			tasks.Insert(tasks.Count - 1, new PassLegacy("Heart Shrine", (GenerationProgress progress, GameConfiguration configuration) => {
 				string[] map = new string[] {
 					"111000000_0000000000000000_000001111",
 					"11000_________00000000_________00011",
@@ -117,10 +118,10 @@ namespace TheOneWithTheHearts {
 			return changedTilesCount;
         }
 		public static bool? IsValidHeartShrineTile(int x, int y) {
-            if (!Main.tile[x, y].active()) {
+            if (!Main.tile[x, y].HasTile) {
 				return null;
             }
-            switch (Main.tile[x, y].type) {
+            switch (Main.tile[x, y].TileType) {
 				case TileID.SnowBlock:
 				case TileID.IceBlock:
 				case TileID.Slush:
@@ -133,7 +134,7 @@ namespace TheOneWithTheHearts {
 			for (int chestIndex = 0; chestIndex < 1000; chestIndex++) {
 				Chest chest = Main.chest[chestIndex];
 				// If you look at the sprite for Chests by extracting Tiles_21.xnb, you'll see that the nth chest is the ___ Chest. Since we are counting from 0, this is where 11 comes from. 36 comes from the width of each tile including padding. 
-				if (chest != null && Main.tile[chest.x, chest.y].type == TileID.Containers && Main.tile[chest.x, chest.y].frameX == 2 * 36) {
+				if (chest != null && Main.tile[chest.x, chest.y].TileType == TileID.Containers && Main.tile[chest.x, chest.y].TileFrameX == 2 * 36) {
 					for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++) {
 						if (chest.item[inventoryIndex].IsAir) {
                             DungeonChests.Add(chestIndex);

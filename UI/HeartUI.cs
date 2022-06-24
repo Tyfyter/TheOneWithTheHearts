@@ -19,7 +19,7 @@ namespace TheOneWithTheHearts.UI
                 heartSlots[i] = new VanillaItemSlotWrapper(scale:0.5f){
 				Left = { Pixels = 1128+((i)%10)*26 },
                 Top = { Pixels = i>9?-45:-70 },
-                ValidItemFunc = item => item.IsAir || !item.IsAir && (item.modItem!=null?item.modItem.mod==TheOneWithTheHearts.mod:false)
+                ValidItemFunc = item => item.IsAir || !item.IsAir && item.ModItem is HeartItemBase
 				};
 				if(Main.LocalPlayer.GetModPlayer<HeartPlayer>().hearts[i]!=null)heartSlots[i].Item = Main.LocalPlayer.GetModPlayer<HeartPlayer>().hearts[i];
                 Append(heartSlots[i]);
@@ -27,15 +27,18 @@ namespace TheOneWithTheHearts.UI
         }
         public override void Update(GameTime gameTime){
             base.Update(gameTime);
-            for (int i = 0; i < 20; i++)if(heartSlots[i].Item.modItem!=null)if(heartSlots[i].Item.modItem.mod.Name==TheOneWithTheHearts.mod.Name)if(((HeartItemBase)heartSlots[i].Item.modItem).GetType().IsSubclassOf(typeof(HeartItemBase))){
-                ((HeartItemBase)heartSlots[i].Item.modItem).index = i;
+            for (int i = 0; i < 20; i++) if (heartSlots[i]?.Item?.ModItem is HeartItemBase heartItem) {
+                heartItem.index = i;
             }
         }
 		public override void OnDeactivate(){
 			UpdatePlayer();
 		}
-		public void UpdatePlayer(){
-			for(int i = 0; i < 20; i++)Main.LocalPlayer.GetModPlayer<HeartPlayer>().hearts[i]=heartSlots[i].Item;
+        public void UpdatePlayer() {
+            HeartPlayer heartPlayer = Main.LocalPlayer.GetModPlayer<HeartPlayer>();
+            for (int i = 0; i < 20; i++) {
+                heartPlayer.hearts[i] = heartSlots[i].Item;
+            }
 		}
     }
 }

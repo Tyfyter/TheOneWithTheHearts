@@ -11,22 +11,22 @@ using TheOneWithTheHearts.UI;
 
 namespace TheOneWithTheHearts {
     public class HeartPlayer : ModPlayer {
-        public int MaxHearts => Math.Min(player.statLifeMax / 20, 20);
-        public int GoldenHearts => Math.Min((player.statLifeMax - 400) / 5, 20);
+        public int MaxHearts => Math.Min(Player.statLifeMax / 20, 20);
+        public int GoldenHearts => Math.Min((Player.statLifeMax - 400) / 5, 20);
         public float HealthMultiplier { get; private set; }
         public Item[] hearts = new Item[20];
         public int oldStatLife = 0;
-        public int multishot = 1;
+        public int multishot = 0;
         public int witheredHearts = 0;
         public float partialRegen = 0;
         public bool frozenImmune = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
             //int defenseReduction = (int)Math.Min(player.statDefense * (Main.expertMode ? 0.75f : 0.5f), damage - 1);
-            float reducedDamage = (float)Main.CalculatePlayerDamage(damage, player.statDefense);
-			float beetleDR = 0.15f * player.beetleOrbs;
-            float totalDM = (1f - player.endurance) * (1f - beetleDR) * (player.solarShields > 0 ? 0.7f : 1f);
+            float reducedDamage = (float)Main.CalculateDamagePlayersTake(damage, Player.statDefense);
+			float beetleDR = 0.15f * Player.beetleOrbs;
+            float totalDM = (1f - Player.endurance) * (1f - beetleDR) * (Player.solarShields > 0 ? 0.7f : 1f);
             float rDamage = Math.Max(reducedDamage * totalDM, 1);//(damage - defenseReduction)
-            float cHealth = player.statLife;
+            float cHealth = Player.statLife;
             float tDamage = 0;
             (int heart, int life) current;
             HeartItemBase currentHeart;
@@ -39,11 +39,11 @@ namespace TheOneWithTheHearts {
                 if (startIndex == -1) {
                     startIndex = current.heart;
                 }
-                currentHeart = hearts[current.heart].modItem as HeartItemBase;
+                currentHeart = hearts[current.heart].ModItem as HeartItemBase;
                 if (currentHeart is null) {
                     break;
                 }
-                currentHeart.Damage(player, ref rDamage, current.heart, startIndex, crit, damageSource);
+                currentHeart.Damage(Player, ref rDamage, current.heart, startIndex, crit, damageSource);
                 if (rDamage > current.life) {
                     tDamage += current.life;
                     cHealth -= current.life;
@@ -66,7 +66,7 @@ namespace TheOneWithTheHearts {
         }
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue) {
             int rHealing = healValue;
-            int cHealth = player.statLife;
+            int cHealth = Player.statLife;
             int tHealing = 0;
             (int heart, int life) current;
             HeartItemBase currentHeart;
@@ -75,7 +75,7 @@ namespace TheOneWithTheHearts {
                 if (current.heart == -1) {
                     break;
                 }
-                currentHeart = hearts[current.heart].modItem as HeartItemBase;
+                currentHeart = hearts[current.heart].ModItem as HeartItemBase;
                 currentHeart.Heal(ref rHealing, current.heart < GoldenHearts);
                 float multipliers = 1f;
                 if (currentHeart.GetsLifeBoosts) {
@@ -105,25 +105,25 @@ namespace TheOneWithTheHearts {
             healValue = tHealing;
         }
         public override void NaturalLifeRegen(ref float regen) {
-            int index = GetCurrentHeart(player.statLife + 1);
-            (hearts[index]?.modItem as HeartItemBase)?.UpdateNaturalRegen(player, ref regen, index < GoldenHearts);
+            int index = GetCurrentHeart(Player.statLife + 1);
+            (hearts[index]?.ModItem as HeartItemBase)?.UpdateNaturalRegen(Player, ref regen, index < GoldenHearts);
         }
         public int MultiplyLifeRegen(int regen) {
-            int index = GetCurrentHeart(player.statLife);
+            int index = GetCurrentHeart(Player.statLife);
             if (index < 0) {
                 return regen;
             }
-            partialRegen += ((HeartItemBase)hearts[index].modItem).ModifyLifeRegen(player, regen, index < GoldenHearts);
+            partialRegen += ((HeartItemBase)hearts[index]?.ModItem)?.ModifyLifeRegen(Player, regen, index < GoldenHearts)??0;
             int actualRegen = (int)(partialRegen - (partialRegen % 1));
             partialRegen -= actualRegen;
             return actualRegen;
         }
         public override void PostUpdateMiscEffects() {
-            HealthMultiplier = player.statLifeMax2 / (float)player.statLifeMax;
+            HealthMultiplier = Player.statLifeMax2 / (float)Player.statLifeMax;
             int currentHeart = GetCurrentHeart();
             int health = 0;
             for (int i = 0; i < MaxHearts; i++){
-                if(hearts[i]?.modItem is HeartItemBase heart) {
+                if(hearts[i]?.ModItem is HeartItemBase heart) {
                     float multipliers = 1f;
                     if (heart.GetsLifeBoosts) {
                         multipliers *= HealthMultiplier;
@@ -133,16 +133,16 @@ namespace TheOneWithTheHearts {
                     }
                     health += (int)(heart.MaxLife * multipliers);
                     if (i == currentHeart) {
-                        heart.WhileActive(player);
+                        heart.WhileActive(Player);
                     } else {
-                        heart.WhileInactive(player);
+                        heart.WhileInactive(Player);
                     }
                 }
             }
             Withered_Heart.GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
-            player.maxMinions += minionSlots;
-            player.minionDamage += minionDamage;
-            player.statLifeMax2 = health;
+            Player.maxMinions += minionSlots;
+            Player.GetDamage(DamageClass.Summon) += minionDamage;
+            Player.statLifeMax2 = health;
             multishot = 0;
             witheredHearts = 0;
         }
@@ -150,12 +150,12 @@ namespace TheOneWithTheHearts {
             frozenImmune = false;
         }
         public override void PreUpdate() {
-            if (frozenImmune && player.frozen) {
-                player.frozen = false;
+            if (frozenImmune && Player.frozen) {
+                Player.frozen = false;
             }
         }
         public override void PostUpdate(){
-            oldStatLife = player.statLife;
+            oldStatLife = Player.statLife;
         }
         /// <summary>
         /// Gets the index of the heart that would be active at the specified health value
@@ -164,10 +164,10 @@ namespace TheOneWithTheHearts {
         /// <returns></returns>
         public int GetCurrentHeart(int health = -1){
             //int a = 0;
-            if(health == -1)health = player.statLife;
+            if(health == -1)health = Player.statLife;
             int highestIndex = 0;
             for (int i = 0; i < MaxHearts; i++){
-                HeartItemBase heart = (hearts[i]?.modItem as HeartItemBase);
+                HeartItemBase heart = (hearts[i]?.ModItem as HeartItemBase);
                 int currentMaxLife = heart?.MaxLife ?? 0;
                 float multipliers = 1f;
                 if (heart?.GetsLifeBoosts??false) {
@@ -194,9 +194,9 @@ namespace TheOneWithTheHearts {
         /// <returns></returns>
         public (int, int) GetCurrentHeartWithHealth(int health = -1){
             //int a = 0;
-            if(health == -1)health = player.statLife;
+            if(health == -1)health = Player.statLife;
             for (int i = 0; i < MaxHearts; i++){
-                HeartItemBase heart = (hearts[i].modItem as HeartItemBase);
+                HeartItemBase heart = (hearts[i].ModItem as HeartItemBase);
                 int currentMaxLife = heart?.MaxLife ?? 0;
                 float multipliers = 1f;
                 if (heart?.GetsLifeBoosts??false) {
@@ -213,34 +213,44 @@ namespace TheOneWithTheHearts {
             }
             return (-1, 0);
         }
-        public override TagCompound Save(){
-            if(hearts is null)return new TagCompound();
-            TagCompound r = new TagCompound{
-                {"hearts", hearts.Select(v=>v??new Item()).ToList()}
-            };
-            return r;
+        public override void SaveData(TagCompound tag) {
+            tag.Add("hearts", hearts.Select(v => v ?? new Item()).ToList());
         }
-        public override void Load(TagCompound tag){
-            try {
+        public override void LoadData(TagCompound tag){
+            if(tag.ContainsKey("hearts")) {
                 hearts = tag.GetList<Item>("hearts").ToArray();
-            } catch (Exception) {
+            } else {
                 try {
                     for (int i = 0; i < 20; i++) {
-                        try {
+                        if (tag.ContainsKey("heart"+i)) {
                             hearts[i] = tag.Get<Item>("heart" + i);
-                        } catch (Exception) {
-                            hearts[i] = new Item();
-                            hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
                         }
                     }
                 } catch (Exception) { }
             }
+			if (hearts.Length != 20) {
+                hearts = new Item[20];
+			}
+            int airCount = 0;
+            retry:
+            for (int i = 0; i < 20; i++) {
+                if (hearts[i]?.IsAir??false) {
+                    airCount++;
+                } else if (hearts[i]?.ModItem is null) {
+                    hearts[i] = new Item(ModContent.ItemType<Default_Heart>());
+				}
+            }
+			if (airCount >= 20) {
+                hearts = new Item[20];
+                goto retry;
+			}
         }
-        public override void SetupStartInventory(IList<Item> items, bool mediumcoreDeath) {
+		public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
             for (int i = 0; i < 20; i++) {
                 hearts[i] = new Item();
                 hearts[i].SetDefaults(ModContent.ItemType<Default_Heart>());
             }
+            return Array.Empty<Item>();
         }
     }
 }

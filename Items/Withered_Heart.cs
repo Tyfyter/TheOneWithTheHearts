@@ -17,28 +17,26 @@ namespace TheOneWithTheHearts.Items
 		}
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-			item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+			Item.width = 22;
 		}
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
 			recipe.AddIngredient(ItemID.VilePowder, 5);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 
-			recipe = new ModRecipe(mod);
+			recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
 			recipe.AddIngredient(ItemID.ViciousPowder, 5);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
 			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().witheredHearts;
@@ -52,7 +50,7 @@ namespace TheOneWithTheHearts.Items
                     if (minionDamage>0) {
 						text += $"\n+{System.Math.Round(minionDamage*100)}% minion damage";
                     }
-					tooltips[i].text = text;
+					tooltips[i].Text = text;
 					break;
                 }
             }

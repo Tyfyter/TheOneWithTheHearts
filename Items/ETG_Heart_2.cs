@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,12 +17,12 @@ namespace TheOneWithTheHearts.Items {
 			Tooltip.SetDefault("4 HP\nWhen active:\nReduces damage taken to 1\nReduces natural life regeneration by 100%\n'. → ⁛'");
 		}
 		public override void SetDefaults() {
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-			item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+			Item.width = 22;
 		}
         public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
 			regen *= golden ? 0.5f : 0;
@@ -31,19 +31,17 @@ namespace TheOneWithTheHearts.Items {
 			return regen / (golden ? (regen > 0 ? 15f : 25f) : 20f);
         }
 		public override void AddRecipes() {
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<ETG_Heart>(), 1);
 			//recipe.AddIngredient(ModContent.ItemType<Mech_Heart>(), 1);
 			recipe.AddIngredient(ItemID.BeetleHusk, 5);
 			recipe.AddTile(TileID.WorkBenches);
-			recipe.SetResult(this);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 		public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default) {
 			HeartPlayer heartPlayer = player.GetModPlayer<HeartPlayer>();
 			for (int i = heartIndex+1; i <= startIndex; i++) {
-				ModItem heart = heartPlayer.hearts[i].modItem;
+				ModItem heart = heartPlayer.hearts[i].ModItem;
                 if (heart is ETG_Heart || heart is ETG_Heart_2) {
 					return;
                 }
@@ -67,19 +65,19 @@ namespace TheOneWithTheHearts.Items {
 			string name = golden ? "Golden/ETG_Heart_2": "ETG_Heart_2";
 			switch (life) {
 				case 4:
-            	spriteBatch.Draw(mod.GetTexture("Items/"+name), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
+            	spriteBatch.Draw(Mod.RequestTexture("Items/"+name), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 3:
-            	spriteBatch.Draw(mod.GetTexture("Items/"+name+"_3Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
+            	spriteBatch.Draw(Mod.RequestTexture("Items/"+name+"_3Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 2:
-            	spriteBatch.Draw(mod.GetTexture("Items/"+name+"_Half"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
+            	spriteBatch.Draw(Mod.RequestTexture("Items/"+name+"_Half"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				case 1:
-            	spriteBatch.Draw(mod.GetTexture("Items/"+name+"_1Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
+            	spriteBatch.Draw(Mod.RequestTexture("Items/"+name+"_1Q"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 				default:
-            	spriteBatch.Draw(mod.GetTexture("Items/"+name+"_Empty"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
+            	spriteBatch.Draw(Mod.RequestTexture("Items/"+name+"_Empty"), position, null, Color.White, 0, origin, 1, SpriteEffects.None, 0);
 				break;
 			}
         }

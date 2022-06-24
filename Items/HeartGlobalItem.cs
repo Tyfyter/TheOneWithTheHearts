@@ -40,16 +40,5 @@ namespace TheOneWithTheHearts.Items {
             }
             return base.UseItem(item, player);
         }*/
-        public override bool Shoot(Item item, Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack){
-            if(!item.ranged)return true;
-            if(item?.modItem?.mod?.Name?.Equals("RefTheGun")??false)return true;
-            int multishot = player.GetModPlayer<HeartPlayer>().multishot;
-            for (int i = multishot; i > 0; i--) {
-                if (item?.modItem?.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack) ?? false) {
-                    Projectile.NewProjectile(position, new Vector2(speedX, speedY).RotatedByRandom(0.1f), type, damage, knockBack, player.whoAmI);
-                }
-            }
-            return true;
-        }
     }
 }

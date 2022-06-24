@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -9,7 +10,7 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Default_Heart : HeartItemBase
 	{
-        public override string Texture => "Terraria/Heart";
+        public override string Texture => "Terraria/Images/Heart";
         public override int MaxLife => 20;
 		public override void SetStaticDefaults()
 		{
@@ -17,34 +18,32 @@ namespace TheOneWithTheHearts.Items
 			Tooltip.SetDefault("20 HP");
 		}
 		public override void SetDefaults() {
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = (int)(22*item.scale);
-			item.width = (int)(22*item.scale);
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = (int)(22*Item.scale);
+			Item.width = (int)(22*Item.scale);
 		}
 		/*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
 			for (int i = 0; i < tooltips.Count; i++)if(tooltips[i].Name.ToLower().Contains("tooltip"))tooltips[i].text = life+"/"+max;
 		}//*/
 		public override void AddRecipes() {
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
 			recipe.AddIngredient(ItemID.RottenChunk, 5);
 			recipe.AddTile(TileID.Hellforge);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 
-			recipe = new ModRecipe(mod);
+			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.LifeCrystal, 1);
 			recipe.AddIngredient(ItemID.Vertebrae, 5);
 			recipe.AddTile(TileID.Hellforge);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
         public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
-            spriteBatch.Draw(golden ? Main.heart2Texture : Main.heartTexture, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw((golden ? TextureAssets.Heart2 : TextureAssets.Heart).Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
         }
 	}
 }

@@ -17,12 +17,12 @@ namespace TheOneWithTheHearts.Items
 		}
 		public override void SetDefaults()
 		{
-			item.CloneDefaults(ItemID.LifeCrystal);
-			item.consumable = false;
-			item.useStyle = 0;
-			item.maxStack = 1;
-			item.height = 22;
-            item.width = 22;
+			Item.CloneDefaults(ItemID.LifeCrystal);
+			Item.consumable = false;
+			Item.useStyle = ItemUseStyleID.None;
+			Item.maxStack = 1;
+			Item.height = 22;
+            Item.width = 22;
 		}
 		/*
 		public override void ModifyTooltips(List<TooltipLine> tooltips){
@@ -30,14 +30,12 @@ namespace TheOneWithTheHearts.Items
 		}//*/
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe(2);
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
-			recipe.AddIngredient(ItemID.IronBar, 3);
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 3);
 			recipe.AddTile(TileID.Sawmill);
 			recipe.AddTile(TileID.Anvils);
-			recipe.SetResult(this, 2);
-			recipe.anyIronBar = true;
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 		public override void Damage(Player player, ref float damage, int heartIndex, int startIndex, bool crit = false, PlayerDeathReason reason = default(PlayerDeathReason)){
 			damage -= Math.Min(damage, 20)/2;
