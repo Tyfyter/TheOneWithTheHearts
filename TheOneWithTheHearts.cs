@@ -43,7 +43,7 @@ namespace TheOneWithTheHearts {
 			orig(self);
 			disableCombatText = false;
 			self.statLife = life + self.GetModPlayer<HeartPlayer>().MultiplyLifeRegen(self.statLife - life);
-            if (self.statLife < life) {
+            if (self.statLife < life && self.statLife < self.statLifeMax2) {
 				CombatText.NewText(new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height), CombatText.LifeRegen, life - self.statLife, dramatic: false, dot: true);
             }
         }

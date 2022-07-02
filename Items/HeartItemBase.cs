@@ -57,7 +57,7 @@ namespace TheOneWithTheHearts.Items {
             HeartPlayer heartPlayer = Main.LocalPlayer.GetModPlayer<HeartPlayer>();
             int i = -1;
             for (i = 0; i < heartPlayer.MaxHearts; i++) {
-                if (heartPlayer.hearts[i]?.IsAir??true) {
+                if (heartPlayer.hearts[i]?.IsAir ?? true) {
                     goto foundEmptySlot;
                 }
             }

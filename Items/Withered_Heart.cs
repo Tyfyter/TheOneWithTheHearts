@@ -39,7 +39,7 @@ namespace TheOneWithTheHearts.Items
 			recipe.Register();
 		}
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().witheredHearts;
+			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().oldWitheredHearts;
             for (int i = tooltips.Count-1; i > 0; i++) {
                 if (tooltips[i].Name.Equals("Tooltip1")) {
 					GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);

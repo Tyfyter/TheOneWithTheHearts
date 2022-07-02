@@ -16,6 +16,7 @@ namespace TheOneWithTheHearts {
         public Item[] hearts = new Item[20];
         public int oldStatLife = 0;
         public int multishot = 0;
+        public int oldWitheredHearts = 0;
         public int witheredHearts = 0;
         public float partialRegen = 0;
         public bool frozenImmune = false;
@@ -143,6 +144,7 @@ namespace TheOneWithTheHearts {
             Player.GetDamage(DamageClass.Summon) += minionDamage;
             Player.statLifeMax2 = health;
             multishot = 0;
+            oldWitheredHearts = witheredHearts;
             witheredHearts = 0;
         }
         public override void ResetEffects() {
