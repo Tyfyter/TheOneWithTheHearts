@@ -60,7 +60,7 @@ namespace TheOneWithTheHearts.Items
 				healing = 1;
             }
         }
-		public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
+		public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale, int index) {
 			string name = golden ? "Golden/ETG_Heart": "ETG_Heart";
 			switch (life) {
 				case 2:

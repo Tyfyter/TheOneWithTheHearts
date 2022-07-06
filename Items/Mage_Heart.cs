@@ -7,13 +7,13 @@ using Terraria.ModLoader;
 
 namespace TheOneWithTheHearts.Items
 {
-	public class Withered_Heart : HeartItemBase
+	public class Mage_Heart : HeartItemBase
 	{
         public override int MaxLife => 12;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Withered Heart");
-			Tooltip.SetDefault("12 HP\n");
+			DisplayName.SetDefault("Heart of Magic");
+			Tooltip.SetDefault("16 HP\n");
 		}
 		public override void SetDefaults()
 		{
@@ -44,102 +44,103 @@ namespace TheOneWithTheHearts.Items
 			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().oldWitheredHearts;
             for (int i = tooltips.Count-1; i > 0; i++) {
                 if (tooltips[i].Name.Equals("Tooltip1")) {
-					GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
-					string text = "+1 minion slot";
-                    if (minionSlots>1) {
-						text = $"From equipped Withered Hearts:\n+{minionSlots} minion slots";
-                    }
-                    if (minionDamage>0) {
-						text += $"\n+{System.Math.Round(minionDamage*100)}% minion damage";
+					GetStatBoosts(witheredHearts, out float magicDamage, out float magicPen);
+					string text = "+2% magic damage";
+					if (magicDamage > 0.02f) {
+						text = $"From equipped Hearts of Magic:\n+{System.Math.Round(magicDamage * 100)}% magic damage";
+					}
+					if (magicPen > 0) {
+						text += $"\n+{magicPen} magic armor penetration";
                     }
 					tooltips[i].Text = text;
 					break;
                 }
             }
         }
-		public static void GetStatBoosts(int witheredHearts, out int minionSlots, out float minionDamage) {
-			minionSlots = 0;
-			minionDamage = 0f;
-            switch (witheredHearts) {
+		public static void GetStatBoosts(int mageHearts, out float magicDamage, out float magicPen) {
+			magicPen = 0f;
+			magicDamage = 0f;
+            switch (mageHearts) {
 				case 20:
-				minionDamage+=0.03f;
-				minionSlots++;
+				magicDamage += 0.02f;
 				goto case 19;
 						
 				case 19:
-				minionDamage+=0.03f;
+				magicDamage += 0.02f;
+				magicPen += 10f;
 				goto case 18;
 						
 				case 18:
-				minionDamage+=0.03f;
+				magicDamage += 0.02f;
 				goto case 17;
 						
 				case 17:
-				minionDamage+=0.03f;
+				magicDamage += 0.02f;
 				goto case 16;
 						
 				case 16:
-				minionDamage+=0.03f;
+				magicDamage += 0.02f;
 				goto case 15;
 						
 				case 15:
-				minionDamage+=0.02f;
+				magicPen += 7f;
 				goto case 14;
 						
 				case 14:
-				minionDamage+=0.02f;
+				magicDamage += 0.02f;
 				goto case 13;
 						
 				case 13:
-				minionDamage+=0.02f;
+				magicDamage += 0.02f;
 				goto case 12;
 						
 				case 12:
-				minionDamage+=0.02f;
+				magicDamage += 0.02f;
 				goto case 11;
 						
 				case 11:
-				minionSlots++;
+				magicDamage += 0.02f;
 				goto case 10;
 						
 				case 10:
-				minionDamage+=0.02f;
+				magicDamage += 0.02f;
+				magicPen += 7f;
 				goto case 9;
 						
 				case 9:
-				minionDamage+=0.01f;
+				magicDamage += 0.02f;
 				goto case 8;
 						
 				case 8:
-				minionDamage+=0.01f;
+				magicDamage += 0.02f;
 				goto case 7;
 						
 				case 7:
-				minionSlots++;
+				magicDamage += 0.02f;
 				goto case 6;
 						
 				case 6:
-				minionDamage+=0.01f;
+				magicDamage += 0.02f;
 				goto case 5;
 						
 				case 5:
-				minionDamage+=0.01f;
+				magicPen += 7f;
 				goto case 4;
 						
 				case 4:
-				minionSlots++;
+				magicDamage += 0.02f;
 				goto case 3;
 						
 				case 3:
-				minionDamage+=0.01f;
+				magicDamage += 0.02f;
 				goto case 2;
 						
 				case 2:
-				minionSlots++;
+				magicPen += 7f;
 				goto case 1;
 
 				case 1:
-				minionSlots++;
+				magicDamage += 0.02f;
 				break;
             }
         }
@@ -150,7 +151,7 @@ namespace TheOneWithTheHearts.Items
 			player.GetModPlayer<HeartPlayer>().witheredHearts+=1;
 		}
         public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
-			regen *= 1.5f;
+			regen += player.statMana * (golden ? 0.015f : 0.01f);
         }
 	}
 }

@@ -38,7 +38,7 @@ namespace TheOneWithTheHearts.Items {
         }
         public virtual void WhileInactive(Player player){}
         public virtual void WhileActive(Player player){}
-        public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
+        public virtual void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale, int index) {
             if (golden && TextureAssets.Item[Item.type].Value.Tag is Texture2D goldenTexture) {
                 spriteBatch.Draw(goldenTexture, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
             } else {

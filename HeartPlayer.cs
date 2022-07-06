@@ -18,6 +18,8 @@ namespace TheOneWithTheHearts {
         public int multishot = 0;
         public int oldWitheredHearts = 0;
         public int witheredHearts = 0;
+        public int oldMageHearts = 0;
+        public int mageHearts = 0;
         public float partialRegen = 0;
         public bool frozenImmune = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource){
@@ -142,6 +144,11 @@ namespace TheOneWithTheHearts {
             Withered_Heart.GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
             Player.maxMinions += minionSlots;
             Player.GetDamage(DamageClass.Summon) += minionDamage;
+
+            Mage_Heart.GetStatBoosts(witheredHearts, out float magicDamage, out float magicPen);
+            Player.GetDamage(DamageClass.Magic) += magicDamage;
+            Player.GetArmorPenetration(DamageClass.Magic) += magicPen;
+
             Player.statLifeMax2 = health;
             multishot = 0;
             oldWitheredHearts = witheredHearts;

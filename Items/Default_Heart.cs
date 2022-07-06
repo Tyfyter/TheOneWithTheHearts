@@ -42,7 +42,7 @@ namespace TheOneWithTheHearts.Items
 			recipe.AddTile(TileID.Hellforge);
 			recipe.Register();
 		}
-        public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale){
+        public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale, int index) {
             spriteBatch.Draw((golden ? TextureAssets.Heart2 : TextureAssets.Heart).Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
         }
 	}

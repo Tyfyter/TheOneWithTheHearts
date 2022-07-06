@@ -88,8 +88,8 @@ namespace TheOneWithTheHearts {
 			}
 			int rowWidth = hearts >= 10 ? 10 : hearts;
 			Vector2 vector = FontAssets.MouseText.Value.MeasureString(Lang.inter[0].Value + " " + player.statLifeMax2 + "/" + player.statLifeMax2);
-			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, Lang.inter[0].Value, new Vector2((float)(500 + 13 * rowWidth) - vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
-			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.statLife + "/" + player.statLifeMax2, new Vector2((float)(500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, new Vector2(FontAssets.MouseText.Value.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
+			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, Lang.inter[0].Value, new Vector2((500 + 13 * rowWidth) - vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, default(Vector2), 1f, SpriteEffects.None, 0f);
+			Main.spriteBatch.DrawString(FontAssets.MouseText.Value, player.statLife + "/" + player.statLifeMax2, new Vector2((500 + 13 * rowWidth) + vector.X * 0.5f + UI_ScreenAnchorX, 6f), Main.MouseTextColorReal, 0f, new Vector2(FontAssets.MouseText.Value.MeasureString(player.statLife + "/" + player.statLifeMax2).X, 0f), 1f, SpriteEffects.None, 0f);
 			int rHealth = player.statLife;
 			bool canRemoveHearts = false;
 			byte equippedHeartCount = 0;
@@ -154,7 +154,7 @@ namespace TheOneWithTheHearts {
 
 				bool favHeld = Main.keyState.IsKeyDown(Main.FavoriteKey);
 				if (currentMaxLife > 0) {
-					currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-- > 0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale);
+					currentHeart.DrawInHearts(Main.spriteBatch, position, heartLife, goldenHearts-- > 0, new Color(rgbValue, rgbValue, rgbValue, alpha), new Vector2(11), heartScale, i);
                 } else if(favHeld){
 					Main.spriteBatch.Draw(pipTexture, position, null, Color.White, 0, new Vector2(4), 0.75f, SpriteEffects.None, 0);
                 }
