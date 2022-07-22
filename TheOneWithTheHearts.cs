@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,6 +10,7 @@ using ReLogic.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.Utilities;
@@ -231,6 +233,13 @@ namespace TheOneWithTheHearts {
 				value++;
 			}
 			return (int)value;
+		}
+		public static void Restart(this SpriteBatch spriteBatch, SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null, SamplerState samplerState = null, RasterizerState rasterizerState = null, Effect effect = null, Matrix? transformMatrix = null) {
+			spriteBatch.End();
+			spriteBatch.Begin(sortMode, blendState ?? BlendState.AlphaBlend, samplerState ?? SamplerState.LinearClamp, DepthStencilState.None, rasterizerState ?? Main.Rasterizer, effect, transformMatrix ?? Main.GameViewMatrix.TransformationMatrix);
+		}
+		public static void UseNonVanillaImage(this ArmorShaderData shaderData, Asset<Texture2D> texture) {
+			typeof(ArmorShaderData).GetField("_uImage", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(shaderData, texture);
 		}
 	}
 }

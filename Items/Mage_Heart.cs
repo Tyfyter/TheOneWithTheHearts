@@ -1,23 +1,35 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace TheOneWithTheHearts.Items
-{
-	public class Mage_Heart : HeartItemBase
-	{
-		public override string Texture => "Terraria/Images/Item_"+ItemID.LifeCrystal;
+namespace TheOneWithTheHearts.Items {
+	public class Mage_Heart : HeartItemBase {
 		public override int MaxLife => 16;
-		public override void SetStaticDefaults()
-		{
+		static ArmorShaderData shader;
+		public override void AutoStaticDefaults() {
+			base.AutoStaticDefaults();
+			if (!Main.dedServ) {
+				shader = new ArmorShaderData(new Ref<Effect>(Mod.Assets.Request<Effect>("Effects/MageHeart", AssetRequestMode.ImmediateLoad).Value), "MageHeart");
+				shader.UseNonVanillaImage(Mod.Assets.Request<Texture2D>("Items/Mage_Heart_Overlay", AssetRequestMode.ImmediateLoad));
+				GameShaders.Armor.BindShader(Type, shader);
+			}
+		}
+		public override void Unload() {
+			shader = null;
+		}
+		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Heart of Magic");
 			Tooltip.SetDefault("16 HP\n");
 		}
-		public override void SetDefaults()
-		{
+		public override void SetDefaults() {
 			Item.CloneDefaults(ItemID.LifeCrystal);
 			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.None;
@@ -26,8 +38,7 @@ namespace TheOneWithTheHearts.Items
 			Item.width = 22;
 			Item.color = Color.DodgerBlue;
 		}
-		public override void AddRecipes()
-		{
+		public override void AddRecipes() {
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
 			recipe.AddIngredient(ItemID.LifeFruit, 1);
@@ -49,16 +60,33 @@ namespace TheOneWithTheHearts.Items
 					GetStatBoosts(witheredHearts, out float magicDamage, out float magicPen);
 					string text = "+2% magic damage";
 					if (magicDamage > 0.02f) {
-						text = $"From equipped Hearts of Magic:\n+{System.Math.Round(magicDamage * 100)}% magic damage";
+						text = $"From equipped Hearts of Magic:\n+ {System.Math.Round(magicDamage * 100)}% magic damage";
 					}
 					if (magicPen > 0) {
-						text += $"\n+{magicPen} magic armor penetration";
+						text += $"\n+ {magicPen} magic armor penetration";
                     }
 					tooltips[i].Text = text;
 					break;
                 }
             }
         }
+		public override void DrawInHearts(SpriteBatch spriteBatch, Vector2 position, int life, bool golden, Color drawColor, Vector2 origin, float scale, int index) {
+			golden = true;
+			if (golden) {
+				Main.spriteBatch.Restart(
+					sortMode: SpriteSortMode.Immediate,
+					transformMatrix: Main.UIScaleMatrix
+				);
+				DrawData data = new(TextureAssets.Item[Item.type].Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+				//shader.UseColor(new Color((int)(Math.Pow(Main.DiscoR / 255f, 2) * 255), (int)(Math.Pow(Main.DiscoG / 255f, 2) * 255), (int)(Math.Pow(Main.DiscoB/255f, 2) * 255)));
+				//shader.UseColor(Main.DiscoColor);
+				shader.Apply(Main.LocalPlayer, data);
+				data.Draw(spriteBatch);
+				Main.spriteBatch.Restart(transformMatrix: Main.UIScaleMatrix);
+			} else {
+				spriteBatch.Draw(TextureAssets.Item[Item.type].Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
+			}
+		}
 		public static void GetStatBoosts(int mageHearts, out float magicDamage, out float magicPen) {
 			magicPen = 0f;
 			magicDamage = 0f;
@@ -146,10 +174,10 @@ namespace TheOneWithTheHearts.Items
 				break;
             }
         }
-        public override void WhileActive(Player player){
+        public override void WhileActive(Player player) {
 			player.GetModPlayer<HeartPlayer>().witheredHearts+=1;
 		}
-		public override void WhileInactive(Player player){
+		public override void WhileInactive(Player player) {
 			player.GetModPlayer<HeartPlayer>().witheredHearts+=1;
 		}
         public override void UpdateNaturalRegen(Player player, ref float regen, bool golden) {
