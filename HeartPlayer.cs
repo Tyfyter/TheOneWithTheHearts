@@ -149,7 +149,7 @@ namespace TheOneWithTheHearts {
             Player.GetDamage(DamageClass.Magic) += magicDamage;
             Player.GetArmorPenetration(DamageClass.Magic) += magicPen;
 
-            Player.statLifeMax2 = health;
+            Player.statLifeMax2 = health > 0 ? health : 1;
             multishot = 0;
             oldWitheredHearts = witheredHearts;
             witheredHearts = 0;
@@ -239,9 +239,9 @@ namespace TheOneWithTheHearts {
 			if (hearts.Length != 20) {
                 hearts = new Item[20];
 			}
-            int airCount = 0;
             retry:
-            for (int i = 0; i < 20; i++) {
+            int airCount = 0;
+            for (int i = 0; i < MaxHearts; i++) {
                 if (hearts[i]?.IsAir??false) {
                     airCount++;
                 } else if (hearts[i]?.ModItem is null) {
@@ -252,7 +252,10 @@ namespace TheOneWithTheHearts {
 			if (airCount >= 20) {
                 hearts = new Item[20];
                 goto retry;
-			}
+			} else if(airCount >= MaxHearts) {
+                hearts = hearts.ToList().OrderBy(h => h.IsAir ? 1 : 0).ToArray();
+                goto retry;
+            }
         }
 		public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) {
             for (int i = 0; i < 20; i++) {

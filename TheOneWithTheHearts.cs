@@ -99,6 +99,7 @@ namespace TheOneWithTheHearts {
 					break;
 				}
 			}
+			canRemoveHearts = true;
 			for (int i = 0; i < heartPlayer.MaxHearts; i++) {
 				HeartItemBase currentHeart = heartPlayer.hearts[i]?.ModItem as HeartItemBase;
 				int currentMaxLife = currentHeart?.MaxLife ?? 0;

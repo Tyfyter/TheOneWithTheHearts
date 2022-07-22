@@ -9,7 +9,8 @@ namespace TheOneWithTheHearts.Items
 {
 	public class Mage_Heart : HeartItemBase
 	{
-        public override int MaxLife => 12;
+		public override string Texture => "Terraria/Images/Item_"+ItemID.LifeCrystal;
+		public override int MaxLife => 16;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Heart of Magic");
@@ -23,6 +24,7 @@ namespace TheOneWithTheHearts.Items
 			Item.maxStack = 1;
 			Item.height = 22;
 			Item.width = 22;
+			Item.color = Color.DodgerBlue;
 		}
 		public override void AddRecipes()
 		{
@@ -31,14 +33,14 @@ namespace TheOneWithTheHearts.Items
 			recipe.AddIngredient(ItemID.LifeFruit, 1);
 			recipe.AddIngredient(ItemID.VilePowder, 5);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.Register();
+			//recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Default_Heart>(), 1);
 			recipe.AddIngredient(ItemID.LifeFruit, 1);
 			recipe.AddIngredient(ItemID.ViciousPowder, 5);
 			recipe.AddTile(TileID.DemonAltar);
-			recipe.Register();
+			//recipe.Register();
 		}
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
 			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().oldWitheredHearts;

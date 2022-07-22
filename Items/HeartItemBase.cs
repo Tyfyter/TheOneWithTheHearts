@@ -58,11 +58,23 @@ namespace TheOneWithTheHearts.Items {
             int i = -1;
             for (i = 0; i < heartPlayer.MaxHearts; i++) {
                 if (heartPlayer.hearts[i]?.IsAir ?? true) {
-                    goto foundEmptySlot;
+                    goto foundSlot;
                 }
             }
             i = -1;
-            foundEmptySlot:
+            if(Item.maxStack == 1 && Main.mouseRightRelease)for (i = 0; i < heartPlayer.MaxHearts; i++) {
+                if (heartPlayer.hearts[i].type != Item.type) {
+					for (int i1 = 0; i1 < Main.InventoryItemSlotsCount; i1++) {
+						if (Main.LocalPlayer.inventory[i1] == Item) {
+                            Utils.Swap(ref Main.LocalPlayer.inventory[i1], ref heartPlayer.hearts[i]);
+                            SoundEngine.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
+                            SoundEngine.PlaySound(SoundID.Grab, Main.LocalPlayer.Center);
+                            return false;
+						}
+                    }
+                }
+            }
+            foundSlot:
             if (i != -1) {
                 Item clone = Item.Clone();
                 clone.stack = 1;
