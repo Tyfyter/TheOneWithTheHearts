@@ -123,7 +123,7 @@ namespace TheOneWithTheHearts {
         public override void PostUpdateMiscEffects() {
             HealthMultiplier = Player.statLifeMax2 / (float)Player.statLifeMax;
             int currentHeart = GetCurrentHeart();
-            int health = 0;
+            float health = 0;
             for (int i = 0; i < MaxHearts; i++){
                 if(hearts[i]?.ModItem is HeartItemBase heart) {
                     float multipliers = 1f;
@@ -133,7 +133,7 @@ namespace TheOneWithTheHearts {
                             multipliers *= 1.25f;
                         }
                     }
-                    health += (int)(heart.MaxLife * multipliers);
+                    health += heart.MaxLife * multipliers;
                     if (i == currentHeart) {
                         heart.WhileActive(Player);
                     } else {
@@ -149,7 +149,7 @@ namespace TheOneWithTheHearts {
             Player.GetDamage(DamageClass.Magic) += magicDamage;
             Player.GetArmorPenetration(DamageClass.Magic) += magicPen;
 
-            Player.statLifeMax2 = health > 0 ? health : 1;
+            Player.statLifeMax2 = (int)(health > 0 ? health : 1);
             multishot = 0;
             oldWitheredHearts = witheredHearts;
             witheredHearts = 0;

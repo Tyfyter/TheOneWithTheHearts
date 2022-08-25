@@ -24,7 +24,7 @@ float4 MageHeart(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR
 	float4 color = tex2D(uImage0, coords);
 	//float3 color2 = tex2D(uImage1, coords).rgb * uColor;
 	const float pi = 3.14159;
-	float time = uTime;
+	float time = uTime + uSaturation;
 	float time1 = time % pi;
 	float time2 = trunc((time / pi) % 3);
 	float3 colorMult = float3(0, 0, 0);

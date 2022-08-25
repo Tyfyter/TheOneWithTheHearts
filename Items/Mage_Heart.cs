@@ -79,7 +79,7 @@ namespace TheOneWithTheHearts.Items {
 				);
 				DrawData data = new(TextureAssets.Item[Item.type].Value, position, null, drawColor, 0, origin, scale, SpriteEffects.None, 0);
 				//shader.UseColor(new Color((int)(Math.Pow(Main.DiscoR / 255f, 2) * 255), (int)(Math.Pow(Main.DiscoG / 255f, 2) * 255), (int)(Math.Pow(Main.DiscoB/255f, 2) * 255)));
-				//shader.UseColor(Main.DiscoColor);
+				shader.UseSaturation(index);
 				shader.Apply(Main.LocalPlayer, data);
 				data.Draw(spriteBatch);
 				Main.spriteBatch.Restart(transformMatrix: Main.UIScaleMatrix);
