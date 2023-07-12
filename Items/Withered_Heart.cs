@@ -42,7 +42,7 @@ namespace TheOneWithTheHearts.Items
 		}
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
 			int witheredHearts = Main.LocalPlayer.GetModPlayer<HeartPlayer>().oldWitheredHearts;
-            for (int i = tooltips.Count-1; i > 0; i++) {
+            for (int i = tooltips.Count-1; i > 0; i--) {
                 if (tooltips[i].Name.Equals("Tooltip1")) {
 					GetStatBoosts(witheredHearts, out int minionSlots, out float minionDamage);
 					string text = "+1 minion slot";
